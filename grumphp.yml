@@ -1,0 +1,27 @@
+grumphp:
+  tasks:
+    phpcs:
+      standard: PSR2
+      whitelist_patterns:
+        - /^app\/(.*)/
+        - /^database\/(.*)/
+        - /^routes\/(.*)/
+    phpstan:
+      level: 6
+      configuration: phpstan.neon
+      use_grumphp_paths: false
+    shell:
+      scripts:
+        - [ './vendor/bin/pint', '--test' ]
+    phpmd:
+      whitelist_patterns:
+        - /^app\/(.*)/
+        - /^database\/(.*)/
+        - /^routes\/(.*)/
+      ruleset: [ phpmd.xml ]
+    rector:
+      config: null
+      triggered_by: [ 'php' ]
+      ignore_patterns: [ ]
+      clear_cache: true
+      no_diffs: false
