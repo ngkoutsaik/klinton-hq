@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ResumeSkills extends Model
+class ResumeSkill extends Model
 {
-    /** @use HasFactory<\Database\Factories\ResumeSkillsFactory> */
+    /** @use HasFactory<\Database\Factories\ResumeSkillFactory> */
     use HasFactory;
 
     protected $fillable = [

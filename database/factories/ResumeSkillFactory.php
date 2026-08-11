@@ -3,14 +3,14 @@
 namespace Database\Factories;
 
 use App\Models\Resume;
-use App\Models\ResumeSkills;
+use App\Models\ResumeSkill;
 use App\Models\Skills;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<ResumeSkills>
+ * @extends Factory<ResumeSkill>
  */
-class ResumeSkillsFactory extends Factory
+class ResumeSkillFactory extends Factory
 {
     /**
      * Define the model's default state.
