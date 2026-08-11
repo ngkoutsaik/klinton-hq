@@ -10,12 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('links', function (Blueprint $table): void {
+        Schema::create('user_links', function (Blueprint $table): void {
             $table->id();
             $table->timestamps();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('link_id')->constrained('links')->onDelete('cascade');
-            $table->binary('is_active')->default(true);
+            $table->binary('is_active');
         });
     }
 
