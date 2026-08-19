@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Resume;
 use App\Models\ResumeSkill;
-use App\Models\Skills;
+use App\Models\Skill;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,7 +21,7 @@ class ResumeSkillFactory extends Factory
     {
         return [
             'resume_id' => Resume::factory()->create()->get('id'),
-            'skill_id'=>Skills::factory()->create()->get('id'),
+            'skill_id' => Skill::factory()->create()->get('id'),
         ];
     }
 }
