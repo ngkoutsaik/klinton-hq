@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->date('end_date')->nullable();
             $table->boolean('in_progress');
             $table->foreignId('resume_id')->constrained()->cascadeOnDelete();
+            $table->unsignedSmallInteger('order')->default(0);
         });
     }
 
