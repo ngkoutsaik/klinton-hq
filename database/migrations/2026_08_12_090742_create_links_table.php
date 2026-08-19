@@ -15,9 +15,11 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->tinyText('title');
-            $table->tinyText('target');
+            $table->tinyText('url');
             $table->tinyText('icon')->nullable();
             $table->boolean('open_in_new_tab')->default(true);
+            $table->foreignId('resume_id')->constrained()->cascadeOnDelete();
+            $table->unsignedSmallInteger('order')->default(0);
         });
     }
 
