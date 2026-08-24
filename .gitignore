@@ -26,3 +26,6 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 storage/phpstan
+/public/css/filament/
+/public/fonts/filament/
+/public/js/filament/

@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
-use Database\Factories\UserLinkFactory;
+use Database\Factories\ResumeLinkFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UserLink extends Model
+class ResumeLink extends Model
 {
-    /** @use HasFactory<UserLinkFactory> */
+    /** @use HasFactory<ResumeLinkFactory> */
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'resume_id',
         'link_id',
         'is_active',
     ];

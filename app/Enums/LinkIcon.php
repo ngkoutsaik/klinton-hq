@@ -10,4 +10,9 @@ enum LinkIcon: string
     case DRUPAL = 'drupal';
     case GITLAB = 'gitlab';
     case DEFAULT = 'default';
+
+    public function getLabel(): string
+    {
+        return $this->value;
+    }
 }

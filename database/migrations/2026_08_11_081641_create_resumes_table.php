@@ -14,7 +14,9 @@ return new class extends Migration {
             $table->id();
             $table->timestamps();
             $table->string('title');
-            $table->string('intro');
+            $table->text('intro');
+            $table->boolean('published')->default(false);
+            $table->boolean('looking_for_role')->default(false);
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
         });
     }

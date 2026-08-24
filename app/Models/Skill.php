@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use Database\Factories\SkillsFactory;
+use Database\Factories\SkillFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Skills extends Model
+class Skill extends Model
 {
-    /** @use HasFactory<SkillsFactory> */
+    /** @use HasFactory<SkillFactory> */
     use HasFactory;
 
     protected $fillable = [

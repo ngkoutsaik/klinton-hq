@@ -2,15 +2,15 @@
 
 namespace Database\Factories;
 
+use App\Models\Link;
 use App\Models\Resume;
-use App\Models\ResumeSkills;
-use App\Models\Skills;
+use App\Models\ResumeLink;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<ResumeSkills>
+ * @extends Factory<ResumeLink>
  */
-class ResumeSkillsFactory extends Factory
+class ResumeLinkFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -21,7 +21,7 @@ class ResumeSkillsFactory extends Factory
     {
         return [
             'resume_id' => Resume::factory()->create()->get('id'),
-            'skill_id'=>Skills::factory()->create()->get('id'),
+            'link_id' => Link::factory()->create()->get('id'),
         ];
     }
 }

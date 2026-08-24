@@ -2,15 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Link;
-use App\Models\User;
-use App\Models\UserLink;
+use App\Models\Skill;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<UserLink>
+ * @extends Factory<Skill>
  */
-class UserLinkFactory extends Factory
+class SkillFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -20,8 +18,7 @@ class UserLinkFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory()->create()->get('id'),
-            'link_id' => Link::factory()->create()->get('id'),
+            'name' => $this->faker->name(),
         ];
     }
 }

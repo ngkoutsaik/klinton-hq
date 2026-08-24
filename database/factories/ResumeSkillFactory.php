@@ -2,13 +2,15 @@
 
 namespace Database\Factories;
 
-use App\Models\Skills;
+use App\Models\Resume;
+use App\Models\ResumeSkill;
+use App\Models\Skill;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Skills>
+ * @extends Factory<ResumeSkill>
  */
-class SkillsFactory extends Factory
+class ResumeSkillFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +20,8 @@ class SkillsFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
+            'resume_id' => Resume::factory()->create()->get('id'),
+            'skill_id' => Skill::factory()->create()->get('id'),
         ];
     }
 }

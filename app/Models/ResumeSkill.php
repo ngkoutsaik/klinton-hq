@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use Database\Factories\ResumeSkillFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class ResumeSkills extends Model
+class ResumeSkill extends Pivot
 {
-    /** @use HasFactory<\Database\Factories\ResumeSkillsFactory> */
+    /** @use HasFactory<ResumeSkillFactory> */
     use HasFactory;
+
+    protected $table = 'resume_skills';
 
     protected $fillable = [
         'resume_id',
