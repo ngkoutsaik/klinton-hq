@@ -39,6 +39,14 @@ class ResumeForm
             Select::make('icon')->options(LinkIcon::class)->default(LinkIcon::DEFAULT),
             Checkbox::make('open_in_new_tab'),
         ]);
+
+        $extraInfo = self::getConfiguredRepeaterComponent('extraInfo');
+        $extraInfo->schema([
+            TextInput::make('title')->required(),
+            TextInput::make('value')->required(),
+        ])
+            ->reorderable();
+
         $resume = [
             Grid::make(2)->schema([
                 TextInput::make('title')
@@ -58,6 +66,7 @@ class ResumeForm
                         ->required()
                         ->unique(),
                 ]),
+            $extraInfo,
             $links,
             $workExperiences,
 

@@ -74,6 +74,11 @@ class Resume extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function extraInfo(): HasMany
+    {
+        return $this->hasMany(ResumeExtraInfo::class);
+    }
+
     /**
      * @throws \Exception
      */
