@@ -1,27 +1,44 @@
 grumphp:
+  process_timeout: 300
+  ascii:
+    failed: ~
+    succeeded: ~
+  environment:
+    variables:
+      XDEBUG_MODE: 'off'
   tasks:
+    composer:
+      strict: false
+    git_blacklist:
+      keywords:
+        - 'dd('
+        - 'dump('
+        - 'var_dump('
+        - 'print_r('
+        - 'ray('
+      triggered_by: [ 'php' ]
+    shell:
+      scripts:
+        - [ '-c', 'git diff --cached --name-only --diff-filter=ACMR -z -- "*.php" | xargs -0 -r ./vendor/bin/pint --test' ]
+      triggered_by: [ 'php' ]
     phpcs:
-      standard: PSR2
+      standard: [ 'phpcs.xml' ]
       whitelist_patterns:
         - /^app\/(.*)/
         - /^database\/(.*)/
         - /^routes\/(.*)/
-    phpstan:
-      level: 6
-      configuration: phpstan.neon
-      use_grumphp_paths: false
-    shell:
-      scripts:
-        - [ './vendor/bin/pint', '--test' ]
+        - /^tests\/(.*)/
     phpmd:
       whitelist_patterns:
         - /^app\/(.*)/
         - /^database\/(.*)/
         - /^routes\/(.*)/
-      ruleset: [ phpmd.xml ]
-    rector:
-      config: null
+      ruleset: [ 'phpmd.xml' ]
+    phpstan:
+      configuration: phpstan.neon
+      level: ~
+      use_grumphp_paths: true
       triggered_by: [ 'php' ]
-      ignore_patterns: [ ]
-      clear_cache: true
-      no_diffs: false
+      ignore_patterns:
+        - /^(?!app\/)/
+      memory_limit: '1G'
