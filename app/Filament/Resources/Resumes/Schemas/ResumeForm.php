@@ -40,10 +40,11 @@ class ResumeForm
             Checkbox::make('open_in_new_tab'),
         ]);
 
-        $extraInfo = self::getConfiguredRepeaterComponent('extraInfo');
+        $extraInfo = self::getConfiguredRepeaterComponent('extraInfo', 3);
         $extraInfo->schema([
             TextInput::make('title')->required(),
             TextInput::make('value')->required(),
+            Checkbox::make('is_active'),
         ])
             ->reorderable();
 

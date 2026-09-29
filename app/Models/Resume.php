@@ -27,10 +27,6 @@ class Resume extends Model
         'looking_for_role' => 'boolean',
     ];
 
-    protected $appends = [
-        'userContactInfo'
-    ];
-
     /**
      * @return HasMany<ResumeSkill, $this>
      */
@@ -40,7 +36,7 @@ class Resume extends Model
     }
 
     /**
-     * @return BelongsToMany<Skill, $this>
+     * @return BelongsToMany<Skill, $this, ResumeSkill>
      */
     public function skills(): BelongsToMany
     {
@@ -67,33 +63,26 @@ class Resume extends Model
     }
 
     /**
-     * @return BelongsTo<BelongsTo,$this>
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return HasMany<ResumeExtraInfo, $this>
+     */
     public function extraInfo(): HasMany
     {
         return $this->hasMany(ResumeExtraInfo::class);
     }
 
     /**
-     * @throws \Exception
+     * @return HasMany<ResumeExtraInfo, $this>
      */
-    public function getUserContactInfoAttribute(): array
+    public function activeExtraInfo(): HasMany
     {
-        $user = $this->user()->first();
-        if (!$user) {
-            throw new \Exception('User not found');
-        }
-
-        return [
-            'email' => $user->get('email'),
-//            'phone' => $user->get('phone'),
-            'name' => $user->get('name'),
-//            'last_name' => $user->get('last_name'),
-        ];
+        return $this->extraInfo()->where('is_active', true);
     }
 }

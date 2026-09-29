@@ -16,6 +16,7 @@ class ResumeExtraInfo extends Model
         'title',
         'value',
         'is_active',
+        'order',
     ];
 
     protected $casts = [
