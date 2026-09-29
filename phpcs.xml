@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<ruleset name="App">
+    <description>PSR-12, aligned with Laravel Pint.</description>
+
+    <file>app</file>
+    <file>database</file>
+    <file>routes</file>
+    <file>tests</file>
+
+    <arg name="extensions" value="php"/>
+    <arg name="colors"/>
+    <arg value="sp"/>
+
+    <rule ref="PSR12">
+        <!-- Pint (laravel preset) allows `use HasFactory, Notifiable;` -->
+        <exclude name="PSR12.Traits.UseDeclaration.MultipleImport"/>
+        <!-- Pint owns line wrapping -->
+        <exclude name="Generic.Files.LineLength"/>
+        <!-- Pint owns operator spacing (laravel preset writes `'a'.$b` without spaces) -->
+        <exclude name="PSR12.Operators.OperatorSpacing"/>
+    </rule>
+
+    <!-- Anonymous migration classes have no namespace -->
+    <rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
+        <exclude-pattern>database/migrations/*</exclude-pattern>
+    </rule>
+
+    <!-- PHPUnit test method names use snake_case -->
+    <rule ref="PSR1.Methods.CamelCapsMethodName">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+</ruleset>

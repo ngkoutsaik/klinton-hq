@@ -11,18 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('work_experiences', function (Blueprint $table) {
+        Schema::create('resume_extra_infos', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
-            $table->string('role_name');
-            $table->string('company_name');
-            $table->string('location');
-            $table->text('description');
-            $table->date('start_date');
-            $table->date('end_date')->nullable();
-            $table->boolean('in_progress');
             $table->foreignId('resume_id')->constrained()->cascadeOnDelete();
+            $table->string('title');
+            $table->string('value');
+            $table->boolean('is_active')->default(true);
             $table->unsignedSmallInteger('order')->default(0);
+            $table->timestamps();
         });
     }
 
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('work_experiences');
+        Schema::dropIfExists('resume_extra_infos');
     }
 };

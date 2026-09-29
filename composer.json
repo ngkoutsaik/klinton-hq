@@ -59,6 +59,23 @@
             "@php artisan config:clear --ansi @no_additional_args",
             "@php artisan test"
         ],
+        "lint": [
+            "pint --test",
+            "phpcs",
+            "phpmd app,database,routes text phpmd.xml"
+        ],
+        "analyse": [
+            "phpstan analyse --memory-limit=1G",
+            "rector process --dry-run"
+        ],
+        "fix": [
+            "rector process",
+            "pint",
+            "phpcbf || true"
+        ],
+        "check": [
+            "grumphp run"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
