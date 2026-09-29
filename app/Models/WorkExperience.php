@@ -2,22 +2,25 @@
 
 namespace App\Models;
 
+use Database\Factories\WorkExperienceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class WorkExperience extends Model
 {
-    /** @use HasFactory<\Database\Factories\WorkExperienceFactory> */
+    /** @use HasFactory<WorkExperienceFactory> */
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'role_name',
+        'company_name',
         'location',
         'description',
         'start_date',
         'end_date',
         'in_progress',
         'resume_id',
+        'order',
     ];
 
     protected $casts = [

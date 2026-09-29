@@ -19,7 +19,8 @@ class WorkExperienceFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
+            'role_name' => $this->faker->name(),
+            'company_name' => $this->faker->name(),
             'location' => $this->faker->word(),
             'description' => $this->faker->text(),
             'start_date' => $this->faker->date(),
