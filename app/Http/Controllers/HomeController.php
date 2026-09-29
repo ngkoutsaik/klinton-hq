@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Resume;
-use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class HomeController extends Controller
 {
@@ -15,12 +15,17 @@ class HomeController extends Controller
 //            $user = User::find(1);
 //        }
         $superAdminId = 1;
-        $resume = Resume::where('user_id', $superAdminId)->with(
+        $resume = Resume::where(['user_id' => $superAdminId, 'published' => true])->with(
             'user',
+            'activeExtraInfo',
             'skills',
             'links',
             'workExperiences'
         )->first();
+
+        if ($resume === null) {
+            return redirect('/404');
+        }
 
         return view('home', ['resume' => $resume]);
     }
