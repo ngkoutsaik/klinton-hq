@@ -16,6 +16,8 @@
         <exclude name="PSR12.Traits.UseDeclaration.MultipleImport"/>
         <!-- Pint owns line wrapping -->
         <exclude name="Generic.Files.LineLength"/>
+        <!-- Pint owns operator spacing (laravel preset writes `'a'.$b` without spaces) -->
+        <exclude name="PSR12.Operators.OperatorSpacing"/>
     </rule>
 
     <!-- Anonymous migration classes have no namespace -->
