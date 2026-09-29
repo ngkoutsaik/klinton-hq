@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Resume;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,12 +19,21 @@ class ResumeFactory extends Factory
     public function definition(): array
     {
         return [
-            'role' => $this->faker->word(),
-            'company_name' => $this->faker->company(),
-            'location' => $this->faker->word(),
-            'description' => $this->faker->text(),
-            'start_date' => $this->faker->date(),
-            'end_date' => $this->faker->date(),
+            'title' => $this->faker->jobTitle(),
+            'intro' => '<p>'.$this->faker->paragraph().'</p>',
+            'published' => false,
+            'looking_for_role' => false,
+            'user_id' => User::factory(),
         ];
+    }
+
+    /**
+     * Indicate that the resume is publicly visible.
+     */
+    public function published(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'published' => true,
+        ]);
     }
 }
