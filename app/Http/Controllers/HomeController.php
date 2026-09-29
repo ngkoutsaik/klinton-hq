@@ -8,7 +8,7 @@ use Illuminate\Http\RedirectResponse;
 
 class HomeController extends Controller
 {
-    public function home(Request $request)
+    public function home(): View|RedirectResponse
     {
 //        $user = $request->user();
 //        if (!$user) {
