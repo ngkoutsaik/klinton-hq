@@ -9,16 +9,16 @@ class ResumeInfolist
 {
     public static function configure(Schema $schema): Schema
     {
-        $component = [
-            TextEntry::make('created_at')
-                ->dateTime()
-                ->placeholder('-'),
-            TextEntry::make('updated_at')
-                ->dateTime()
-                ->placeholder('-'),
-            TextEntry::make('title'),
-            TextEntry::make('intro')->html(true),
-        ];
+        //        $component = [
+        //            TextEntry::make('created_at')
+        //                ->dateTime()
+        //                ->placeholder('-'),
+        //            TextEntry::make('updated_at')
+        //                ->dateTime()
+        //                ->placeholder('-'),
+        //            TextEntry::make('title'),
+        //            TextEntry::make('intro')->html(true),
+        //        ];
 
         return $schema;
     }
