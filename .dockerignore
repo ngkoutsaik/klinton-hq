@@ -1,0 +1,33 @@
+# Keep the build context small and free of local state and secrets
+.git
+.github
+.idea
+.vscode
+.env
+.env.*
+!.env.example
+node_modules
+vendor
+tests
+ISSUES.md
+.phpunit.cache
+.phpunit.result.cache
+
+# Built or published during the image build
+public/build
+public/hot
+public/storage
+public/css/filament
+public/fonts/filament
+public/js/filament
+
+# Local caches (e.g. a Sail-generated config cache would break production)
+bootstrap/cache/*.php
+storage/app/*
+storage/framework/cache/data
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+storage/pail
+storage/phpstan
+database/*.sqlite
