@@ -14,7 +14,11 @@
     <title>{{ $fullName }}</title>
     <meta name="description" content="{{ $fullName }} – resume">
     @fonts
-    @vite('resources/css/resume.css')
+    @if($isPdf===true)
+        <style>        {!! Vite::content('resources/css/resume.css') !!}</style>
+    @else
+        @vite('resources/css/resume.css')
+    @endif
 </head>
 <body>
 <main class="resume">
@@ -54,8 +58,7 @@
             @endif
         </div>
 
-        {{-- TODO: point to the PDF download route --}}
-        <a href="#" class="download-button">
+        <a href="{{route('resume.download')}}" class="download-button">
             <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
