@@ -38,6 +38,7 @@ class HomeController extends Controller
 
         return Pdf::view('home', ['resume' => $resume, 'isPdf' => true])
             ->format('a4')
+            ->cache()
             ->download($fileName);
     }
 
