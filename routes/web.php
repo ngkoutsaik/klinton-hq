@@ -5,4 +5,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'home']);
 
-Route::get('/download', [HomeController::class, 'download'])->name('resume.download');
+Route::get('/download', [HomeController::class, 'download'])->name('resume.download')
+    ->middleware(['throttle:20,1']);
