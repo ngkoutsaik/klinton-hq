@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import { bunny } from 'laravel-vite-plugin/fonts';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
@@ -8,14 +7,12 @@ export default defineConfig({
         laravel({
             input: ['resources/js/app.js', 'resources/css/resume.css'],
             refresh: true,
-            fonts: [
-                bunny('Instrument Sans', {
-                    weights: [400, 500, 600],
-                }),
-            ],
         }),
         tailwindcss(),
     ],
+    build: {
+        assetsInlineLimit: (filePath) => (filePath.endsWith('.woff2') ? true : undefined),
+    },
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**'],

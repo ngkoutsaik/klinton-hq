@@ -13,9 +13,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $fullName }}</title>
     <meta name="description" content="{{ $fullName }} – resume">
-    @fonts
     @if($isPdf===true)
-        <style>        {!! Vite::content('resources/css/resume.css') !!}</style>
+        <style>{!! Vite::content('resources/css/resume.css') !!}</style>
     @else
         @vite('resources/css/resume.css')
     @endif
