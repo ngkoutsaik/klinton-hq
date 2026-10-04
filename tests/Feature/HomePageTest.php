@@ -52,11 +52,11 @@ class HomePageTest extends TestCase
         User::factory()->create(['id' => self::OWNER_ID]);
         Resume::factory()->published()->create();
 
-        $this->get('/')->assertRedirect('/404');
+        $this->get('/')->assertNotFound();
     }
 
-    public function test_it_redirects_when_there_is_no_resume(): void
+    public function test_it_returns_not_found_when_there_is_no_resume(): void
     {
-        $this->get('/')->assertRedirect('/404');
+        $this->get('/')->assertNotFound();
     }
 }
