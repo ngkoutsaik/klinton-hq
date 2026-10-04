@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Resume;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Spatie\LaravelPdf\PdfBuilder;
@@ -12,15 +12,13 @@ use Spatie\LaravelPdf\PdfBuilder;
 class HomeController extends Controller
 {
     /**
-     * Show the admin's published resume, or redirect to 404 if there is none.
+     * Show the admin's published resume, or 404 if there is none.
      */
-    public function home(): View|RedirectResponse
+    public function home(): View
     {
         $resume = $this->getResume();
 
-        if ($resume === null) {
-            return redirect('/404');
-        }
+        abort_if($resume === null, 404);
 
         return view('home', ['resume' => $resume, 'isPdf' => false]);
     }
@@ -40,6 +38,29 @@ class HomeController extends Controller
             ->format('a4')
             ->cache()
             ->download($fileName);
+    }
+
+    /**
+     * List the public pages for search engines.
+     */
+    public function sitemap(): Response
+    {
+        $resume = $this->getResume();
+
+        abort_if($resume === null, 404);
+
+        return response()
+            ->view('sitemap', ['resume' => $resume])
+            ->header('Content-Type', 'application/xml');
+    }
+
+    /**
+     * Allow all crawlers and point them to the sitemap.
+     */
+    public function robots(): Response
+    {
+        return response("User-agent: *\nDisallow:\n\nSitemap: ".route('sitemap')."\n")
+            ->header('Content-Type', 'text/plain');
     }
 
     /**
