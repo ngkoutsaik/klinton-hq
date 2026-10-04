@@ -5,14 +5,48 @@
     $links = $resume->links?->sortBy('order');
     $workExperiences = $resume->workExperiences?->sortBy('order');
     $skills = $resume->skills->filter(fn ($skill) => $skill->pivot->is_active);
+
+    $jobTitle = 'Senior Software Engineer';
+    $pageTitle = "{$fullName} – {$jobTitle}";
+    $introText = strip_tags((string) $resume->intro);
+    $description = Str::limit(Str::squish(html_entity_decode($introText, ENT_QUOTES)), 155)
+        ?: "Resume of {$fullName}, {$jobTitle}.";
+    $canonicalUrl = url('/');
+    $currentExperience = $workExperiences->first(fn ($experience) => $experience->in_progress || ! $experience->end_date);
+    $personSchema = array_filter([
+        '@context' => 'https://schema.org',
+        '@type' => 'Person',
+        'name' => $fullName,
+        'jobTitle' => $jobTitle,
+        'url' => $canonicalUrl,
+        'description' => $description,
+        'sameAs' => $links->pluck('url')->filter(fn ($url) => Str::startsWith($url, ['http://', 'https://']))->unique()->values()->all(),
+        'knowsAbout' => $skills->pluck('name')->values()->all(),
+        'worksFor' => $currentExperience ? ['@type' => 'Organization', 'name' => $currentExperience->company_name] : null,
+    ]);
 @endphp
         <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $fullName }}</title>
-    <meta name="description" content="{{ $fullName }} – resume">
+    <title>{{ $pageTitle }}</title>
+    <meta name="description" content="{{ $description }}">
+    <link rel="canonical" href="{{ $canonicalUrl }}">
+
+    <meta property="og:type" content="profile">
+    <meta property="og:title" content="{{ $pageTitle }}">
+    <meta property="og:description" content="{{ $description }}">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    @if($user->first_name && $user->last_name)
+        <meta property="profile:first_name" content="{{ $user->first_name }}">
+        <meta property="profile:last_name" content="{{ $user->last_name }}">
+    @endif
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ $pageTitle }}">
+    <meta name="twitter:description" content="{{ $description }}">
+
+    <script type="application/ld+json">{!! json_encode($personSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
     @if($isPdf===true)
         <style>{!! Vite::content('resources/css/resume.css') !!}</style>
     @else
@@ -42,7 +76,7 @@
                     @foreach($links as $link)
                         <li>
                             <a href="{{ $link->url }}"
-                               @if($link->open_in_new_tab) target="_blank" rel="noopener noreferrer" @endif>
+                               @if($link->open_in_new_tab) target="_blank" rel="me noopener noreferrer" @else rel="me" @endif>
                                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15"
                                      viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                      stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -84,9 +118,9 @@
                 <article class="experience">
                     <header class="experience-header">
                         <div>
-                            <span class="experience-role">
+                            <h3 class="experience-role">
                                 {{ $experience->company_name }} – {{ $experience->role_name }}
-                            </span>
+                            </h3>
                             @if($experience->location)
                                 <span class="experience-location">
                                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
@@ -99,10 +133,14 @@
                                 </span>
                             @endif
                         </div>
-                        <h3 class="experience-dates">
-                            {{ $experience->start_date->format('m/Y') }} –
-                            {{ $experience->in_progress || ! $experience->end_date ? 'Present' : $experience->end_date->format('m/Y') }}
-                        </h3>
+                        <p class="experience-dates">
+                            <time datetime="{{ $experience->start_date->format('Y-m') }}">{{ $experience->start_date->format('m/Y') }}</time> –
+                            @if($experience->in_progress || ! $experience->end_date)
+                                Present
+                            @else
+                                <time datetime="{{ $experience->end_date->format('Y-m') }}">{{ $experience->end_date->format('m/Y') }}</time>
+                            @endif
+                        </p>
                     </header>
                     <div class="rich-text">{!! $experience->description !!}</div>
                 </article>
