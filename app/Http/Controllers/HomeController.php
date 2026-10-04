@@ -37,6 +37,7 @@ class HomeController extends Controller
         return Pdf::view('home', ['resume' => $resume, 'isPdf' => true])
             ->format('a4')
             ->cache()
+            ->headers(['X-Robots-Tag' => 'noindex'])
             ->download($fileName);
     }
 
