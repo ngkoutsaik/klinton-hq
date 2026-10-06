@@ -31,11 +31,11 @@ version, and visitors can download it as a PDF. Invoicing is planned next.
 - **Laravel 13 (PHP 8.3).** I've used Laravel in production for about a year and a half, so this is a chance to go
   deeper. It's also quick to build and ship with.
 - **Filament 5** for the admin panel. This is a standard CRUD site, and Filament saves a lot of development time. The
-  trade-off is that it can get complicated in more advanced cases, such as several pivot tables on one form.
+  trade-off is that it can get complicated in more advanced cases, such as several pivot tables in one form.
 - **Gotenberg** (through [spatie/laravel-pdf](https://github.com/spatie/laravel-pdf)) for PDFs. I've used PHP
   libraries like dompdf and mPDF before; they're finicky and struggle with modern CSS, often forcing table-based
   layouts. Gotenberg renders with Chromium, so the PDF uses the same template and CSS as the web page. It's slower
-  than a PHP library, but the generated PDF is cached, so that doesn't matter here.
+  than a PHP library, but the generated PDF is cached to compensate for that.
 - **Coolify on a Hetzner VPS** for hosting (see [Deployment](#deployment)). It's quick and easy, and as my first
   self-hosted deployment I didn't want to write all the scripts from scratch. I'm learning the DevOps side in steps.
 - **MySQL** in development and production (SQLite in CI). The schema is simple and doesn't change much, and I know
