@@ -1,58 +1,209 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Klinton HQ
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+[![CI](https://github.com/ngkoutsaik/klinton-hq/actions/workflows/laravel.yml/badge.svg)](https://github.com/ngkoutsaik/klinton-hq/actions/workflows/laravel.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## About Laravel
+**Live site: [klinton.dev](https://klinton.dev/)**
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Klinton HQ is my hub as a contractor: a place where people can find out more about me and get in touch, and a set
+of tools that automate the time-consuming parts of the job. It's also a project for going deeper into Laravel and
+DevOps: Docker, CI, static analysis, and self-hosting with Coolify.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+The first tool is a **resume generator**. I keep my resume in an admin panel, the homepage shows the published
+version, and visitors can download it as a PDF. Invoicing is planned next.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Public resume page | Admin panel |
+|--------------------|-------------|
+| <a href="docs/screenshots/resume.png"><img src="docs/screenshots/resume-preview.png" alt="Public resume page" title="Click for full size"></a> | <a href="docs/screenshots/admin.png"><img src="docs/screenshots/admin-preview.png" alt="Filament admin panel, editing a resume" title="Click for the full edit page"></a> |
 
-## Learning Laravel
+## Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Public resume page.** The homepage shows the published resume, with skills, work experience, links and extra info.
+- **PDF download.** `/download` renders the same page to an A4 PDF through [Gotenberg](https://gotenberg.dev). The
+  output is cached and the route is rate limited.
+- **Admin panel.** [Filament](https://filamentphp.com) at `/admin` for managing resumes. Only users flagged as admin
+  can sign in.
+- **SEO.** Open Graph tags, a JSON-LD `Person` schema, `sitemap.xml` and `robots.txt`. The admin panel and the PDF
+  download are marked `noindex`.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Tech stack
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- **Laravel 13 (PHP 8.3).** I've used Laravel in production for about a year and a half, so this is a chance to go
+  deeper. It's also quick to build and ship with.
+- **Filament 5** for the admin panel. This is a standard CRUD site, and Filament saves a lot of development time. The
+  trade-off is that it can get complicated in more advanced cases, such as several pivot tables in one form.
+- **Gotenberg** (through [spatie/laravel-pdf](https://github.com/spatie/laravel-pdf)) for PDFs. I've used PHP
+  libraries like dompdf and mPDF before; they're finicky and struggle with modern CSS, often forcing table-based
+  layouts. Gotenberg renders with Chromium, so the PDF uses the same template and CSS as the web page. It's slower
+  than a PHP library, but the generated PDF is cached to compensate for that.
+- **Coolify on a Hetzner VPS** for hosting (see [Deployment](#deployment)). It's quick and easy, and as my first
+  self-hosted deployment I didn't want to write all the scripts from scratch. I'm learning the DevOps side in steps.
+- **MySQL** in development and production (SQLite in CI). The schema is simple and doesn't change much, and I know
+  how MySQL works with Laravel.
+- **GrumPHP, PHPStan, Pint, PHPMD and Rector** for code quality, run before every commit and in CI.
+- **Laravel Sail, Vite and Tailwind CSS** so I don't have to build everything from zero. Sail gets a local
+  environment running quickly, and Vite with Tailwind handles the CSS and assets.
 
-## Agentic Development
+## Where to look
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+| What                          | Where                                                    |
+|-------------------------------|----------------------------------------------------------|
+| Public routes                 | `routes/web.php`                                         |
+| Homepage, PDF, sitemap, robots | `app/Http/Controllers/HomeController.php`                |
+| Resume page and PDF template  | `resources/views/home.blade.php`                         |
+| Admin form                    | `app/Filament/Resources/Resumes/Schemas/ResumeForm.php`  |
+| Admin panel setup             | `app/Providers/Filament/AdminPanelProvider.php`          |
+| Data model                    | `app/Models/`, `database/migrations/`                    |
+| Create-admin command          | `app/Console/Commands/CreateAdmin.php`                   |
+
+## Getting started
+
+### Prerequisites
+
+- Docker with Docker Compose
+- PHP 8.3 and Composer, only needed for the first `composer install` (Sail runs everything else)
+- Node.js 24
+
+### Setup
 
 ```bash
-composer require laravel/boost --dev
+git clone git@github.com:ngkoutsaik/klinton-hq.git
+cd klinton-hq
 
-php artisan boost:install
+composer install
+cp .env.example .env
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+`.env.example` defaults to SQLite. To use Sail's MySQL container, change the database settings in `.env`:
+
+```dotenv
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel
+DB_USERNAME=sail
+DB_PASSWORD=password
+```
+
+Then start the containers and finish the setup:
+
+```bash
+./vendor/bin/sail up -d
+./vendor/bin/sail artisan key:generate
+./vendor/bin/sail artisan migrate
+./vendor/bin/sail npm install
+./vendor/bin/sail npm run build
+```
+
+The app runs at <http://localhost>. Set `APP_PORT` in `.env` to use a different port.
+
+Sail also starts a Gotenberg container, and `.env.example` already points `GOTENBERG_URL` at it, so PDF downloads
+work locally without extra setup.
+
+> [!TIP]
+> Use `./vendor/bin/sail npm run dev` instead of `build` for hot reloading while you work. It keeps running until you
+> stop it. If you stop it and the page loads without CSS, delete `public/hot` and run `build` again.
+
+### First run
+
+1. Create an admin user:
+
+   ```bash
+   ./vendor/bin/sail artisan app:create-admin
+   ```
+
+   It asks for an email, name and password. If the email already belongs to a user, it makes that user an admin and
+   resets their password.
+2. Sign in at <http://localhost/admin>.
+3. Create a resume and tick **Published**.
+4. Open <http://localhost>. The download button gives you the PDF.
+
+> [!NOTE]
+> The homepage shows the published resume of the user with ID `1`. On a fresh database that's the first admin you
+> create. Until that user has a published resume, `/`, `/download` and `/sitemap.xml` return 404.
+
+## Testing and code quality
+
+Run these inside Sail (`./vendor/bin/sail composer test`). The tests use Sail's MySQL `testing` database, so
+`composer test` fails on the host unless PHP there has the MySQL driver and can reach that database.
+
+```bash
+composer test      # PHPUnit
+composer lint      # Pint (check only), PHP_CodeSniffer, PHPMD
+composer analyse   # PHPStan (Larastan), Rector dry run
+composer fix       # Apply Rector, Pint and phpcbf fixes
+composer check     # Run every GrumPHP task
+```
+
+GrumPHP also runs as a pre-commit hook. GitHub Actions runs the tests and GrumPHP on every push and pull request to
+`main`.
+
+## Deployment
+
+### How klinton.dev runs
+
+- A [Hetzner](https://www.hetzner.com) VPS running [Coolify](https://coolify.io), with Traefik handling routing and
+  HTTPS.
+- The app is built from the `Dockerfile` in this repo.
+- MySQL and Gotenberg are Coolify-managed services on the same Docker network, so the app reaches them by their
+  service names.
+- Pull requests are merged into `main` once the tests and GrumPHP pass in GitHub Actions. A webhook then makes Coolify
+  rebuild and deploy the app automatically.
+- To create an admin in production, run `php artisan app:create-admin` from the app container's terminal in Coolify.
+
+### Running it yourself
+
+The `Dockerfile` builds a production image based on
+[serversideup/php](https://serversideup.net/open-source/docker-php/) (PHP-FPM and Nginx). It installs Composer
+dependencies without dev packages, builds the front-end assets and caches Filament's assets. With
+`AUTORUN_ENABLED=true`, the container runs the Laravel startup tasks (such as migrations and caching) on boot.
+
+```bash
+docker build -t klinton-hq .
+docker run -d --name klinton-hq --env-file .env.production -p 8080:8080 klinton-hq
+```
+
+You need to provide:
+
+- A production env file with `APP_ENV=production`, `APP_DEBUG=false`, a generated `APP_KEY` and the database settings.
+- A running **Gotenberg** instance, set with `GOTENBERG_URL` (e.g. `http://gotenberg:3000`). PDF generation needs it,
+  and `/download` fails without it. The rest of the site works fine.
+
+Create the first admin inside the running container:
+
+```bash
+docker exec -it klinton-hq php artisan app:create-admin
+```
+
+## Roadmap
+
+- [x] Resume page with PDF download
+- [x] Open Graph tags and structured data
+- [ ] Social preview image (`og:image`)
+- [ ] Education and certifications
+- [ ] Contact form with spam protection
+- [ ] Private links to tailored resumes
+- [ ] Invoicing: clients, invoices, PDF, email sending
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+This is a personal project, so I'm not looking for pull requests. Issues and suggestions are welcome, though.
 
-## Code of Conduct
+## Security
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Please don't open a public issue for security problems. Report them privately through GitHub's
+[security advisories](https://github.com/ngkoutsaik/klinton-hq/security/advisories/new) instead.
 
-## Security Vulnerabilities
+## Contact
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+The best way to reach me is through [klinton.dev](https://klinton.dev/).
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+[MIT](LICENSE). You can use, change and share the code however you like, with no warranty and no liability on my
+part.
+
+> [!IMPORTANT]
+> This includes the invoicing features. Invoicing rules (numbering, required fields, tax, e-invoicing) differ by
+> country, and nothing here is legal or tax advice. If you use this code to issue invoices, you're responsible for
+> checking that they meet your local requirements.

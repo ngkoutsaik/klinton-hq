@@ -1,11 +1,13 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "ngkoutsaik/klinton-hq",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "Klinton-HQ is a project built to provide tools for a contractor (me).",
     "keywords": [
         "laravel",
-        "framework"
+        "filament",
+        "resume",
+        "pdf"
     ],
     "license": "MIT",
     "require": {

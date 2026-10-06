@@ -15,7 +15,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        if (! app()->environment(['local'])) {
+            $this->command?->warn('Skipping the seeded admin outside the local and testing environments.');
+
+            return;
+        }
 
         User::factory()->admin()->create([
             'name' => 'Test User',
