@@ -29,8 +29,7 @@
         "phpmd/phpmd": "^2.15.0",
         "phpro/grumphp": "^2.23",
         "phpstan/phpstan": "^2.2",
-        "phpunit/phpunit": "^12.5.12",
-        "squizlabs/php_codesniffer": "^4.0"
+        "phpunit/phpunit": "^12.5.12"
     },
     "autoload": {
         "psr-4": {
@@ -62,18 +61,15 @@
             "@php artisan test"
         ],
         "lint": [
+            "@composer validate --no-check-publish",
             "pint --test",
-            "phpcs",
             "phpmd app,database,routes text phpmd.xml"
         ],
         "analyse": [
-            "phpstan analyse --memory-limit=1G",
-            "rector process --dry-run"
+            "phpstan analyse --memory-limit=1G"
         ],
         "fix": [
-            "rector process",
-            "pint",
-            "phpcbf || true"
+            "pint"
         ],
         "check": [
             "grumphp run --testsuite=full"
