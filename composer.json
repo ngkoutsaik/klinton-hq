@@ -77,7 +77,7 @@
             "phpcbf || true"
         ],
         "check": [
-            "grumphp run"
+            "grumphp run --testsuite=full"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

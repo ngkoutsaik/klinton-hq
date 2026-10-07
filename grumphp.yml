@@ -17,17 +17,18 @@ grumphp:
         - 'print_r('
         - 'ray('
       triggered_by: [ 'php' ]
-    shell:
+    pint_staged:
       scripts:
         - [ '-c', 'git diff --cached --name-only --diff-filter=ACMR -z -- "*.php" | xargs -0 -r ./vendor/bin/pint --test' ]
       triggered_by: [ 'php' ]
-    phpcs:
-      standard: [ 'phpcs.xml' ]
-      whitelist_patterns:
-        - /^app\/(.*)/
-        - /^database\/(.*)/
-        - /^routes\/(.*)/
-        - /^tests\/(.*)/
+      metadata:
+        task: shell
+    pint_all:
+      scripts:
+        - [ '-c', './vendor/bin/pint --test' ]
+      triggered_by: [ 'php' ]
+      metadata:
+        task: shell
     phpmd:
       whitelist_patterns:
         - /^app\/(.*)/
@@ -42,3 +43,8 @@ grumphp:
       ignore_patterns:
         - /^(?!app\/)/
       memory_limit: '1G'
+  testsuites:
+    git_pre_commit:
+      tasks: [ composer, git_blacklist, pint_staged, phpmd, phpstan ]
+    full:
+      tasks: [ composer, pint_all, phpmd, phpstan ]
