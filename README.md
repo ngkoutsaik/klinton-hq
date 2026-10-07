@@ -1,6 +1,6 @@
 # Klinton HQ
 
-[![CI](https://github.com/ngkoutsaik/klinton-hq/actions/workflows/laravel.yml/badge.svg)](https://github.com/ngkoutsaik/klinton-hq/actions/workflows/laravel.yml)
+[![CI](https://github.com/ngkoutsaik/klinton-hq/actions/workflows/ci.yml/badge.svg)](https://github.com/ngkoutsaik/klinton-hq/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 **Live site: [klinton.dev](https://klinton.dev/)**
@@ -38,9 +38,9 @@ version, and visitors can download it as a PDF. Invoicing is planned next.
   than a PHP library, but the generated PDF is cached to compensate for that.
 - **Coolify on a Hetzner VPS** for hosting (see [Deployment](#deployment)). It's quick and easy, and as my first
   self-hosted deployment I didn't want to write all the scripts from scratch. I'm learning the DevOps side in steps.
-- **MySQL** in development and production (SQLite in CI). The schema is simple and doesn't change much, and I know
-  how MySQL works with Laravel.
-- **GrumPHP, PHPStan, Pint, PHPMD and Rector** for code quality, run before every commit and in CI.
+- **MySQL** in development, CI and production. The schema is simple and doesn't change much, and I know how MySQL
+  works with Laravel.
+- **PHPStan, Pint and PHPMD** for code quality, run in CI and on every commit through a GrumPHP pre-commit hook.
 - **Laravel Sail, Vite and Tailwind CSS** so I don't have to build everything from zero. Sail gets a local
   environment running quickly, and Vite with Tailwind handles the CSS and assets.
 
@@ -61,8 +61,8 @@ version, and visitors can download it as a PDF. Invoicing is planned next.
 ### Prerequisites
 
 - Docker with Docker Compose
-- PHP 8.3 and Composer, only needed for the first `composer install` (Sail runs everything else)
-- Node.js 24
+
+PHP, Composer and Node.js run inside Sail's containers, so you don't need them on the host.
 
 ### Setup
 
@@ -70,9 +70,17 @@ version, and visitors can download it as a PDF. Invoicing is planned next.
 git clone git@github.com:ngkoutsaik/klinton-hq.git
 cd klinton-hq
 
-composer install
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "$(pwd):/var/www/html" \
+    -w /var/www/html \
+    laravelsail/php83-composer:latest \
+    composer install --ignore-platform-reqs
+
 cp .env.example .env
 ```
+
+The first `composer install` runs in a throwaway container, because Sail itself is installed by Composer.
 
 `.env.example` defaults to SQLite. To use Sail's MySQL container, change the database settings in `.env`:
 
@@ -124,19 +132,21 @@ work locally without extra setup.
 
 ## Testing and code quality
 
-Run these inside Sail (`./vendor/bin/sail composer test`). The tests use Sail's MySQL `testing` database, so
-`composer test` fails on the host unless PHP there has the MySQL driver and can reach that database.
+Run these through Sail, e.g. `./vendor/bin/sail composer test`. The tests use Sail's MySQL `testing` database.
 
 ```bash
 composer test      # PHPUnit
-composer lint      # Pint (check only), PHP_CodeSniffer, PHPMD
-composer analyse   # PHPStan (Larastan), Rector dry run
-composer fix       # Apply Rector, Pint and phpcbf fixes
-composer check     # Run every GrumPHP task
+composer lint      # composer validate, Pint (check only), PHPMD
+composer analyse   # PHPStan (Larastan)
+composer fix       # Apply Pint fixes
+composer check     # Run GrumPHP on the whole project, the same checks as CI
 ```
 
-GrumPHP also runs as a pre-commit hook. GitHub Actions runs the tests and GrumPHP on every push and pull request to
-`main`.
+GrumPHP runs as a pre-commit hook inside the Sail container, so Sail needs to be running when you commit. It checks
+only the staged files with Pint, PHPMD and PHPStan, and blocks leftover debug calls like `dd()`.
+
+GitHub Actions runs on every push and pull request to `main`: GrumPHP on the whole project, the tests on
+MySQL 8.4 (after the front-end build), `composer audit` and `npm audit`, and a build of the production Docker image.
 
 ## Deployment
 
@@ -147,8 +157,8 @@ GrumPHP also runs as a pre-commit hook. GitHub Actions runs the tests and GrumPH
 - The app is built from the `Dockerfile` in this repo.
 - MySQL and Gotenberg are Coolify-managed services on the same Docker network, so the app reaches them by their
   service names.
-- Pull requests are merged into `main` once the tests and GrumPHP pass in GitHub Actions. A webhook then makes Coolify
-  rebuild and deploy the app automatically.
+- I merge pull requests into `main` once GitHub Actions passes. Every push to `main` triggers a webhook that makes
+  Coolify rebuild and deploy the app; the deployment waits for CI to pass.
 - To create an admin in production, run `php artisan app:create-admin` from the app container's terminal in Coolify.
 
 ### Running it yourself
