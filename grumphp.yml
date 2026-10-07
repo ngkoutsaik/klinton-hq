@@ -1,5 +1,7 @@
 grumphp:
   process_timeout: 300
+  git_hook_variables:
+    EXEC_GRUMPHP_COMMAND: [ 'docker', 'compose', 'exec', '-T', '-u', 'sail', 'laravel.test', 'php' ]
   ascii:
     failed: ~
     succeeded: ~
