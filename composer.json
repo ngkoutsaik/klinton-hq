@@ -30,7 +30,6 @@
         "phpro/grumphp": "^2.23",
         "phpstan/phpstan": "^2.2",
         "phpunit/phpunit": "^12.5.12",
-        "rector/rector": "^2.6",
         "squizlabs/php_codesniffer": "^4.0"
     },
     "autoload": {
