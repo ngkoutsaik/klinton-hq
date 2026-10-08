@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Resume;
+use Exception;
+use Illuminate\Container\Attributes\Config;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
@@ -11,6 +13,8 @@ use Spatie\LaravelPdf\PdfBuilder;
 
 class HomeController extends Controller
 {
+    public function __construct(#[Config('admin.email')] protected ?string $adminEmail) {}
+
     /**
      * Show the admin's published resume, or 404 if there is none.
      */
@@ -68,14 +72,18 @@ class HomeController extends Controller
      */
     protected function getResume(): ?Resume
     {
-        $superAdminId = 1;
+        if ($this->adminEmail === null) {
+            throw new Exception('Admin email is not set');
+        }
 
-        return Resume::where(['user_id' => $superAdminId, 'published' => true])->with(
-            'user',
-            'activeExtraInfo',
-            'skills',
-            'links',
-            'workExperiences'
-        )->first();
+        return Resume::where('published', true)
+            ->whereRelation('user', 'email', $this->adminEmail)
+            ->with(
+                'user',
+                'activeExtraInfo',
+                'skills',
+                'links',
+                'workExperiences'
+            )->first();
     }
 }
