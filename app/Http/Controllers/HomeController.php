@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Resume;
+use Exception;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
@@ -19,7 +20,7 @@ class HomeController extends Controller
     }
 
     /**
-     * Show the admin's published resume, or 404 if there is none.
+     * Show the admin's published resume, or a coming soon page if there is none.
      */
     public function home(): View
     {
@@ -32,7 +33,9 @@ class HomeController extends Controller
         )
             ->first();
 
-        abort_if($resume === null, 404);
+        if ($resume === null) {
+            return view('coming-soon');
+        }
 
         return view('home', ['resume' => $resume, 'isPdf' => false]);
     }
