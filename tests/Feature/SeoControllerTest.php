@@ -13,7 +13,7 @@ class SeoControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    private const string ADMIN_EMAIL = 'admin@test.com';
+    private const string ADMIN_EMAIL = 'test@example.com';
 
     protected function setUp(): void
     {
