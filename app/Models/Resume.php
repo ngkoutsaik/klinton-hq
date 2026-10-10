@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Database\Factories\ResumeFactory;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -84,5 +85,13 @@ class Resume extends Model
     public function activeExtraInfo(): HasMany
     {
         return $this->extraInfo()->where('is_active', true);
+    }
+
+    /**
+     * @param  EloquentBuilder<Resume>  $query
+     */
+    public function scopePublishedFor(EloquentBuilder $query, ?string $email): void
+    {
+        $query->where('published', true)->whereRelation('user', 'email', $email);
     }
 }

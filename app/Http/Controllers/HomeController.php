@@ -3,22 +3,39 @@
 namespace App\Http\Controllers;
 
 use App\Models\Resume;
+use Exception;
+use Illuminate\Container\Attributes\Config;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Spatie\LaravelPdf\PdfBuilder;
 
 class HomeController extends Controller
 {
+    public function __construct(#[Config('admin.email')] protected ?string $adminEmail)
+    {
+        if (blank($this->adminEmail)) {
+            throw new Exception('Admin email is not set');
+        }
+    }
+
     /**
-     * Show the admin's published resume, or 404 if there is none.
+     * Show the admin's published resume, or a coming soon page if there is none.
      */
     public function home(): View
     {
-        $resume = $this->getResume();
+        $resume = Resume::publishedFor($this->adminEmail)->with(
+            'user',
+            'activeExtraInfo',
+            'skills',
+            'links',
+            'workExperiences'
+        )
+            ->first();
 
-        abort_if($resume === null, 404);
+        if ($resume === null) {
+            return view('coming-soon');
+        }
 
         return view('home', ['resume' => $resume, 'isPdf' => false]);
     }
@@ -28,7 +45,14 @@ class HomeController extends Controller
      */
     public function download(): PdfBuilder
     {
-        $resume = $this->getResume();
+        $resume = Resume::publishedFor($this->adminEmail)->with(
+            'user',
+            'activeExtraInfo',
+            'skills',
+            'links',
+            'workExperiences'
+        )
+            ->first();
 
         abort_if($resume === null, 404);
         $user = $resume->user;
@@ -38,44 +62,5 @@ class HomeController extends Controller
             ->format('a4')
             ->cache()
             ->download($fileName);
-    }
-
-    /**
-     * List the public pages for search engines.
-     */
-    public function sitemap(): Response
-    {
-        $resume = $this->getResume();
-
-        abort_if($resume === null, 404);
-
-        return response()
-            ->view('sitemap', ['resume' => $resume])
-            ->header('Content-Type', 'application/xml');
-    }
-
-    /**
-     * Allow all crawlers and point them to the sitemap.
-     */
-    public function robots(): Response
-    {
-        return response("User-agent: *\nDisallow:\n\nSitemap: ".route('sitemap')."\n")
-            ->header('Content-Type', 'text/plain');
-    }
-
-    /**
-     * Load the admin's published resume with required relationships.
-     */
-    protected function getResume(): ?Resume
-    {
-        $superAdminId = 1;
-
-        return Resume::where(['user_id' => $superAdminId, 'published' => true])->with(
-            'user',
-            'activeExtraInfo',
-            'skills',
-            'links',
-            'workExperiences'
-        )->first();
     }
 }
