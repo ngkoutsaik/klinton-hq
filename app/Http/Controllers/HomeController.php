@@ -14,7 +14,7 @@ class HomeController extends Controller
 {
     public function __construct(#[Config('admin.email')] protected ?string $adminEmail)
     {
-        if ($this->adminEmail === null) {
+        if (blank($this->adminEmail)) {
             throw new Exception('Admin email is not set');
         }
     }

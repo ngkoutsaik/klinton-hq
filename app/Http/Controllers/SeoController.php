@@ -16,7 +16,7 @@ class SeoController extends Controller
      */
     public function sitemap(): Response
     {
-        if ($this->adminEmail === null) {
+        if (blank($this->adminEmail)) {
             throw new Exception('Admin email is not set');
         }
 
