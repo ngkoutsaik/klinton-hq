@@ -41,7 +41,7 @@ return new class extends Migration
             $table->renameColumn('title', 'role_name');
             $table->renameColumn('organization', 'company_name');
             $table->text('description')->nullable(false)->change();
-            $table->string('location');
+            $table->string('location')->nullable(false)->change();
         });
         Schema::rename('resume_entries', 'work_experiences');
 
