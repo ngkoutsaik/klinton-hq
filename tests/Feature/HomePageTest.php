@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Resume;
 use App\Models\User;
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -60,5 +61,16 @@ class HomePageTest extends TestCase
     public function test_it_shows_coming_soon_when_there_is_no_resume(): void
     {
         $this->get('/')->assertOk()->assertViewIs('coming-soon');
+    }
+
+    public function test_it_fails_when_the_admin_email_is_empty(): void
+    {
+        config(['admin.email' => '']);
+
+        $this->withoutExceptionHandling();
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Admin email is not set');
+
+        $this->get('/');
     }
 }
