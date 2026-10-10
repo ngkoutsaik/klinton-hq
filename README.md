@@ -23,8 +23,8 @@ version, and visitors can download it as a PDF. Invoicing is planned next.
   output is cached and the route is rate limited.
 - **Admin panel.** [Filament](https://filamentphp.com) at `/admin` for managing resumes. Only users flagged as admin
   can sign in.
-- **SEO.** Open Graph tags, a JSON-LD `Person` schema, `sitemap.xml` and `robots.txt`. The admin panel and the PDF
-  download are marked `noindex`.
+- **SEO.** Open Graph tags, a JSON-LD `Person` schema, `sitemap.xml` and `robots.txt`. The admin panel, the PDF
+  download and the "coming soon" page are marked `noindex`.
 
 ## Tech stack
 
@@ -46,15 +46,16 @@ version, and visitors can download it as a PDF. Invoicing is planned next.
 
 ## Where to look
 
-| What                          | Where                                                    |
-|-------------------------------|----------------------------------------------------------|
-| Public routes                 | `routes/web.php`                                         |
-| Homepage, PDF, sitemap, robots | `app/Http/Controllers/HomeController.php`                |
-| Resume page and PDF template  | `resources/views/home.blade.php`                         |
-| Admin form                    | `app/Filament/Resources/Resumes/Schemas/ResumeForm.php`  |
-| Admin panel setup             | `app/Providers/Filament/AdminPanelProvider.php`          |
-| Data model                    | `app/Models/`, `database/migrations/`                    |
-| Create-admin command          | `app/Console/Commands/CreateAdmin.php`                   |
+| What                         | Where                                                   |
+|------------------------------|---------------------------------------------------------|
+| Public routes                | `routes/web.php`                                        |
+| Homepage and PDF             | `app/Http/Controllers/HomeController.php`               |
+| Sitemap and robots.txt       | `app/Http/Controllers/SeoController.php`                |
+| Resume page and PDF template | `resources/views/home.blade.php`                        |
+| Admin form                   | `app/Filament/Resources/Resumes/Schemas/ResumeForm.php` |
+| Admin panel setup            | `app/Providers/Filament/AdminPanelProvider.php`         |
+| Data model                   | `app/Models/`, `database/migrations/`                   |
+| Create-admin command         | `app/Console/Commands/CreateAdmin.php`                  |
 
 ## Getting started
 
@@ -122,13 +123,15 @@ work locally without extra setup.
 
    It asks for an email, name and password. If the email already belongs to a user, it makes that user an admin and
    resets their password.
-2. Sign in at <http://localhost/admin>.
-3. Create a resume and tick **Published**.
-4. Open <http://localhost>. The download button gives you the PDF.
+2. Set `DEFAULT_ADMIN_EMAIL` in `.env` to that same email. The public pages show this user's resume.
+3. Sign in at <http://localhost/admin>.
+4. Create a resume and tick **Published**.
+5. Open <http://localhost>. The download button gives you the PDF.
 
 > [!NOTE]
-> The homepage shows the published resume of the user with ID `1`. On a fresh database that's the first admin you
-> create. Until that user has a published resume, `/`, `/download` and `/sitemap.xml` return 404.
+> The homepage shows the published resume of the user whose email matches `DEFAULT_ADMIN_EMAIL`. Until that user has
+> a published resume, `/` shows a "coming soon" page and `/download` and `/sitemap.xml` return 404. If
+> `DEFAULT_ADMIN_EMAIL` is empty, those three routes fail with an "Admin email is not set" error.
 
 ## Testing and code quality
 
@@ -175,11 +178,12 @@ docker run -d --name klinton-hq --env-file .env.production -p 8080:8080 klinton-
 
 You need to provide:
 
-- A production env file with `APP_ENV=production`, `APP_DEBUG=false`, a generated `APP_KEY` and the database settings.
+- A production env file with `APP_ENV=production`, `APP_DEBUG=false`, a generated `APP_KEY`, the database settings
+  and `DEFAULT_ADMIN_EMAIL` (the admin whose resume the site shows).
 - A running **Gotenberg** instance, set with `GOTENBERG_URL` (e.g. `http://gotenberg:3000`). PDF generation needs it,
   and `/download` fails without it. The rest of the site works fine.
 
-Create the first admin inside the running container:
+Create the first admin inside the running container, using the same email as `DEFAULT_ADMIN_EMAIL`:
 
 ```bash
 docker exec -it klinton-hq php artisan app:create-admin
