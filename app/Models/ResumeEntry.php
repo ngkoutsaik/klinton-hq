@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
-use Database\Factories\WorkExperienceFactory;
+use App\Enums\ResumeEntryType;
+use Database\Factories\ResumeEntryFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class WorkExperience extends Model
+class ResumeEntry extends Model
 {
-    /** @use HasFactory<WorkExperienceFactory> */
+    /** @use HasFactory<ResumeEntryFactory> */
     use HasFactory;
 
     protected $fillable = [
-        'role_name',
-        'company_name',
+        'title',
+        'organization',
         'location',
         'description',
         'start_date',
@@ -21,12 +22,14 @@ class WorkExperience extends Model
         'in_progress',
         'resume_id',
         'order',
+        'type',
     ];
 
     protected $casts = [
         'start_date' => 'datetime',
         'end_date' => 'datetime',
         'in_progress' => 'boolean',
+        'type' => ResumeEntryType::class,
     ];
 
     protected $attributes = [
