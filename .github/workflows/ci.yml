@@ -91,6 +91,7 @@ jobs:
         DB_DATABASE: testing
         DB_USERNAME: root
         DB_PASSWORD: password
+        DEFAULT_ADMIN_EMAIL: "test@example.com"
       run: php artisan test
     permissions:
       contents: read
