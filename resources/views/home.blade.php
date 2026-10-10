@@ -4,6 +4,7 @@
     $extraInfos = $resume->activeExtraInfo;
     $links = $resume->links?->sortBy('order');
     $workExperiences = $resume->workExperiences?->sortBy('order');
+    $education = $resume->education?->sortBy('order');
     $skills = $resume->skills->filter(fn ($skill) => $skill->pivot->is_active);
 
     $jobTitle = 'Senior Software Engineer';
@@ -22,7 +23,7 @@
         'description' => $description,
         'sameAs' => $links->pluck('url')->filter(fn ($url) => Str::startsWith($url, ['http://', 'https://']))->unique()->values()->all(),
         'knowsAbout' => $skills->pluck('name')->values()->all(),
-        'worksFor' => $currentExperience ? ['@type' => 'Organization', 'name' => $currentExperience->company_name] : null,
+        'worksFor' => $currentExperience ? ['@type' => 'Organization', 'name' => $currentExperience->organization] : null,
     ]);
 @endphp
         <!doctype html>
@@ -111,43 +112,12 @@
     @endif
 
     @if($workExperiences->isNotEmpty())
-        <section class="resume-section">
-            <h2 class="section-title">Work Experience</h2>
-
-            @foreach($workExperiences as $experience)
-                <article class="experience">
-                    <header class="experience-header">
-                        <div>
-                            <h3 class="experience-role">
-                                {{ $experience->company_name }} – {{ $experience->role_name }}
-                            </h3>
-                            @if($experience->location)
-                                <span class="experience-location">
-                                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                        <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
-                                        <circle cx="12" cy="10" r="3"/>
-                                    </svg>
-                                    {{ $experience->location }}
-                                </span>
-                            @endif
-                        </div>
-                        <p class="experience-dates">
-                            <time datetime="{{ $experience->start_date->format('Y-m') }}">{{ $experience->start_date->format('m/Y') }}</time> –
-                            @if($experience->in_progress || ! $experience->end_date)
-                                Present
-                            @else
-                                <time datetime="{{ $experience->end_date->format('Y-m') }}">{{ $experience->end_date->format('m/Y') }}</time>
-                            @endif
-                        </p>
-                    </header>
-                    <div class="rich-text">{!! $experience->description !!}</div>
-                </article>
-            @endforeach
-        </section>
+        <x-resume-entries title='Work Experience' :entries="$workExperiences"></x-resume-entries>
     @endif
 
+    @if($education->isNotEmpty())
+        <x-resume-entries title="Education" :entries="$education"></x-resume-entries>
+    @endif
     @if($skills->isNotEmpty())
         <section class="resume-section">
             <h2 class="section-title">Technical Skills</h2>

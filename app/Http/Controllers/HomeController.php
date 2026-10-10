@@ -29,7 +29,8 @@ class HomeController extends Controller
             'activeExtraInfo',
             'skills',
             'links',
-            'workExperiences'
+            'workExperiences',
+            'education'
         )
             ->first();
 
@@ -50,7 +51,8 @@ class HomeController extends Controller
             'activeExtraInfo',
             'skills',
             'links',
-            'workExperiences'
+            'workExperiences',
+            'education'
         )
             ->first();
 
