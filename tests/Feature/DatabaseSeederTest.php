@@ -28,7 +28,7 @@ class DatabaseSeederTest extends TestCase
         $this->assertCount(2, $resume->education);
         $this->assertCount(3, $resume->links);
         $this->assertCount(2, $resume->activeExtraInfo);
-        $this->assertCount(8, $resume->skills);
+        $this->assertCount(10, $resume->skills);
     }
 
     public function test_the_seeded_resume_is_shown_on_the_home_page(): void
