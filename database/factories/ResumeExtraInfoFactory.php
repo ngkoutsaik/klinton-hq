@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Resume;
 use App\Models\ResumeExtraInfo;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,6 +21,7 @@ class ResumeExtraInfoFactory extends Factory
         return [
             'title' => $this->faker->word(),
             'value' => $this->faker->word(),
+            'resume_id' => Resume::factory(),
         ];
     }
 }

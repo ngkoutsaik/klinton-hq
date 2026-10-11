@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\LinkIcon;
 use App\Models\Link;
+use App\Models\Resume;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,9 +21,10 @@ class LinkFactory extends Factory
     {
         return [
             'title' => $this->faker->word(),
-            'target' => $this->faker->words(),
+            'url' => $this->faker->url(),
             'icon' => $this->faker->randomElement(LinkIcon::class),
             'open_in_new_tab' => $this->faker->boolean(),
+            'resume_id' => Resume::factory(),
         ];
     }
 }

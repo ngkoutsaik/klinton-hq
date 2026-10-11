@@ -20,8 +20,8 @@ class ResumeSkillFactory extends Factory
     public function definition(): array
     {
         return [
-            'resume_id' => Resume::factory()->create()->get('id'),
-            'skill_id' => Skill::factory()->create()->get('id'),
+            'resume_id' => Resume::factory(),
+            'skill_id' => Skill::factory(),
         ];
     }
 }
