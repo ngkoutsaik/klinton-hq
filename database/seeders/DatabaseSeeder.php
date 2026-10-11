@@ -15,15 +15,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        if (! app()->environment(['local'])) {
+        if (! app()->environment(['local', 'testing'])) {
             $this->command?->warn('Skipping the seeded admin outside the local and testing environments.');
 
             return;
         }
 
-        User::factory()->admin()->create([
+        $admin = User::factory()->admin()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        $this->callWith(ResumeSeeder::class, ['owner' => $admin]);
     }
 }

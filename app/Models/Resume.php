@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ResumeEntryType;
 use Database\Factories\ResumeFactory;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -56,11 +57,27 @@ class Resume extends Model
     }
 
     /**
-     * @return HasMany<WorkExperience, $this>
+     * @return HasMany<ResumeEntry, $this>
+     */
+    public function resumeEntries(): HasMany
+    {
+        return $this->hasMany(ResumeEntry::class);
+    }
+
+    /**
+     * @return HasMany<ResumeEntry, $this>
      */
     public function workExperiences(): HasMany
     {
-        return $this->hasMany(WorkExperience::class);
+        return $this->resumeEntries()->withAttributes(['type' => ResumeEntryType::WORK]);
+    }
+
+    /**
+     * @return HasMany<ResumeEntry, $this>
+     */
+    public function education(): HasMany
+    {
+        return $this->resumeEntries()->withAttributes(['type' => ResumeEntryType::EDUCATION]);
     }
 
     /**
