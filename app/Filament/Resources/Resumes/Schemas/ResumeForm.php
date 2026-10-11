@@ -4,11 +4,15 @@ namespace App\Filament\Resources\Resumes\Schemas;
 
 use App\Enums\LinkIcon;
 use App\Enums\ResumeEntryType;
+use App\Enums\SkillType;
+use App\Models\Skill;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -30,7 +34,12 @@ class ResumeForm
 
         $education->schema(self::getResumeEntrySchema(ResumeEntryType::EDUCATION));
 
-        $links = self::getConfiguredRepeaterComponent('links', 3);
+        $links = self::getConfiguredTableRepeaterComponent('links', [
+            TableColumn::make('Title'),
+            TableColumn::make('URL')->markAsRequired(),
+            TableColumn::make('Icon'),
+            self::getCheckboxTableColumn('New tab'),
+        ]);
         $links->schema([
             TextInput::make('title'),
             TextInput::make('url')
@@ -41,13 +50,39 @@ class ResumeForm
             Checkbox::make('open_in_new_tab'),
         ]);
 
-        $extraInfo = self::getConfiguredRepeaterComponent('extraInfo', 3);
+        $extraInfo = self::getConfiguredTableRepeaterComponent('extraInfo', [
+            TableColumn::make('Title')->markAsRequired(),
+            TableColumn::make('Value')->markAsRequired(),
+            self::getCheckboxTableColumn('Active'),
+        ]);
         $extraInfo->schema([
             TextInput::make('title')->required(),
             TextInput::make('value')->required(),
             Checkbox::make('is_active'),
+        ]);
+
+        $skills = self::getConfiguredTableRepeaterComponent('resumeSkills', [
+            TableColumn::make('Skill')->markAsRequired(),
+            TableColumn::make('Type'),
+            self::getCheckboxTableColumn('Active'),
         ])
-            ->reorderable();
+            ->label('Skills')
+            ->schema([
+                Select::make('skill_id')
+                    ->label('Skill')
+                    ->relationship('skill', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required()
+                    ->distinct()
+                    ->createOptionForm(self::getSkillSchema())
+                    ->editOptionForm(self::getSkillSchema()),
+                TextEntry::make('type')
+                    ->hiddenLabel()
+                    ->state(fn (Get $get): ?string => Skill::find($get('skill_id'))?->type->getLabel()),
+                Checkbox::make('is_active')->default(true),
+            ]);
+
         $currentUser = auth()->user();
         $user = Section::make('Owner')->schema([
             TextInput::make('first_name')->required()->default($currentUser->first_name),
@@ -63,18 +98,7 @@ class ResumeForm
             ]),
             $user,
             self::getConfiguredRichEditorComponent('intro'),
-            Select::make('skills')
-                ->relationship('skills', 'name')
-                ->multiple()
-                ->searchable()
-                ->pivotData([
-                    'is_active' => true,
-                ])
-                ->createOptionForm([
-                    TextInput::make('name')
-                        ->required()
-                        ->unique(),
-                ]),
+            $skills,
             $extraInfo,
             $links,
             $workExperiences,
@@ -110,6 +134,21 @@ class ResumeForm
             ->orderColumn('order')
             ->collapsible(true)
             ->collapsed(fn (string $operation): bool => $operation === 'edit');
+    }
+
+    /**
+     * @param  array<TableColumn>  $columns
+     */
+    protected static function getConfiguredTableRepeaterComponent(string $label, array $columns): Repeater
+    {
+        return self::getConfiguredRepeaterComponent($label)
+            ->table($columns)
+            ->compact();
+    }
+
+    protected static function getCheckboxTableColumn(string $label): TableColumn
+    {
+        return TableColumn::make($label)->width('6rem');
     }
 
     /**
@@ -150,6 +189,19 @@ class ResumeForm
                         ->disabled(fn (Get $get): bool => (bool) $get('in_progress')),
                 ]),
             ]),
+        ];
+    }
+
+    /**
+     * @return array<Component>
+     */
+    protected static function getSkillSchema(): array
+    {
+        return [
+            TextInput::make('name')
+                ->required()
+                ->unique(),
+            Select::make('type')->options(SkillType::class)->required(),
         ];
     }
 

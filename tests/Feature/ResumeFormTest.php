@@ -3,10 +3,12 @@
 namespace Tests\Feature;
 
 use App\Enums\ResumeEntryType;
+use App\Enums\SkillType;
 use App\Filament\Resources\Resumes\Pages\CreateResume;
 use App\Filament\Resources\Resumes\Pages\EditResume;
 use App\Models\Resume;
 use App\Models\ResumeEntry;
+use App\Models\Skill;
 use App\Models\User;
 use Filament\Forms\Components\Repeater;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -78,6 +80,7 @@ class ResumeFormTest extends TestCase
             ->set('data.user.last_name', 'Doe')
             ->set('data.extraInfo', [])
             ->set('data.links', [])
+            ->set('data.resumeSkills', [])
             ->set("data.workExperiences.$workKey", [
                 'title' => 'Backend Developer',
                 'organization' => 'Acme',
@@ -98,6 +101,31 @@ class ResumeFormTest extends TestCase
 
         $this->assertDatabaseHas('resume_entries', ['title' => 'Backend Developer', 'type' => ResumeEntryType::WORK]);
         $this->assertDatabaseHas('resume_entries', ['title' => 'BSc Computer Science', 'type' => ResumeEntryType::EDUCATION]);
+    }
+
+    public function test_it_attaches_skills_through_the_repeater(): void
+    {
+        $undoRepeaterFake = Repeater::fake();
+        $resume = Resume::factory()->create();
+        $skill = Skill::factory()->create();
+
+        Livewire::test(EditResume::class, ['record' => $resume->getRouteKey()])
+            ->fillForm(['resumeSkills' => [['skill_id' => $skill->getKey(), 'is_active' => false]]])
+            ->call('save')
+            ->assertHasNoFormErrors(['resumeSkills']);
+
+        $this->assertDatabaseHas('resume_skills', ['resume_id' => $resume->getKey(), 'skill_id' => $skill->getKey(), 'is_active' => false]);
+
+        $undoRepeaterFake();
+    }
+
+    public function test_it_shows_each_skills_type_in_the_repeater(): void
+    {
+        $resume = Resume::factory()->create();
+        $resume->skills()->attach(Skill::factory()->create(['type' => SkillType::TOOL]));
+
+        Livewire::test(EditResume::class, ['record' => $resume->getRouteKey()])
+            ->assertSeeText(SkillType::TOOL->getLabel());
     }
 
     public function test_it_loads_each_entry_into_the_repeater_for_its_type(): void
