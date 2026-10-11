@@ -30,7 +30,7 @@ class ResumeEntryTest extends TestCase
         $entry = $resume->education()->create([
             'title' => 'BSc Computer Science',
             'organization' => 'University of Ljubljana',
-            'start_date' => '2010-10-01',
+            'start_year' => 2010,
         ]);
 
         $this->assertSame(ResumeEntryType::EDUCATION, $entry->fresh()->type);
@@ -43,10 +43,20 @@ class ResumeEntryTest extends TestCase
         $entry = $resume->workExperiences()->create([
             'title' => 'Developer',
             'organization' => 'Acme',
-            'start_date' => '2020-01-01',
+            'start_year' => 2020,
             'description' => '<p>Built things.</p>',
         ]);
 
         $this->assertSame(ResumeEntryType::WORK, $entry->fresh()->type);
+    }
+
+    public function test_saving_an_ongoing_entry_clears_its_end_date(): void
+    {
+        $entry = ResumeEntry::factory()->create(['in_progress' => false, 'end_year' => 2020, 'end_month' => 5]);
+
+        $entry->update(['in_progress' => true]);
+
+        $this->assertNull($entry->fresh()->end_year);
+        $this->assertNull($entry->fresh()->end_month);
     }
 }

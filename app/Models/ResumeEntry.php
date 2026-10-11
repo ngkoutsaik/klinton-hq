@@ -17,8 +17,10 @@ class ResumeEntry extends Model
         'organization',
         'location',
         'description',
-        'start_date',
-        'end_date',
+        'start_year',
+        'start_month',
+        'end_year',
+        'end_month',
         'in_progress',
         'resume_id',
         'order',
@@ -26,8 +28,10 @@ class ResumeEntry extends Model
     ];
 
     protected $casts = [
-        'start_date' => 'datetime',
-        'end_date' => 'datetime',
+        'start_year' => 'integer',
+        'start_month' => 'integer',
+        'end_year' => 'integer',
+        'end_month' => 'integer',
         'in_progress' => 'boolean',
         'type' => ResumeEntryType::class,
     ];
@@ -35,4 +39,15 @@ class ResumeEntry extends Model
     protected $attributes = [
         'in_progress' => false,
     ];
+
+    protected static function booted(): void
+    {
+        // The form disables the end fields for ongoing entries, and Filament doesn't save disabled fields
+        static::saving(function (ResumeEntry $entry) {
+            if ($entry->in_progress) {
+                $entry->end_year = null;
+                $entry->end_month = null;
+            }
+        });
+    }
 }

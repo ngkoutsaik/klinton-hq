@@ -5,7 +5,6 @@ namespace App\Filament\Resources\Resumes\Schemas;
 use App\Enums\LinkIcon;
 use App\Enums\ResumeEntryType;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -13,7 +12,9 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Date;
 
 class ResumeForm
 {
@@ -127,10 +128,48 @@ class ResumeForm
                 TextInput::make('organization')->label($organizationLabel)->required(),
                 TextInput::make('location')
                     ->required(),
-                DatePicker::make('start_date')->required(),
-                DatePicker::make('end_date'),
-                Checkbox::make('in_progress'),
+                Checkbox::make('in_progress')->live(),
+                Grid::make(2)->schema([
+                    Select::make('start_month')->options(self::monthOptions()),
+                    Select::make('start_year')
+                        ->options(self::yearOptions())
+                        ->searchable()
+                        ->required(),
+                ]),
+                Grid::make(2)->schema([
+                    Select::make('end_month')
+                        ->options(self::monthOptions())
+                        ->disabled(fn (Get $get): bool => (bool) $get('in_progress')),
+                    Select::make('end_year')
+                        ->options(self::yearOptions())
+                        ->searchable()
+                        ->rule('integer')
+                        ->gte('start_year')
+                        ->requiredWith('end_month')
+                        ->required(fn (Get $get): bool => ! $get('in_progress'))
+                        ->disabled(fn (Get $get): bool => (bool) $get('in_progress')),
+                ]),
             ]),
         ];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected static function monthOptions(): array
+    {
+        return collect(range(1, 12))
+            ->mapWithKeys(fn (int $month): array => [$month => Date::create(2000, $month)->monthName])
+            ->all();
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected static function yearOptions(): array
+    {
+        $years = range(Date::now()->year + 5, 2000);
+
+        return array_combine($years, array_map(strval(...), $years));
     }
 }

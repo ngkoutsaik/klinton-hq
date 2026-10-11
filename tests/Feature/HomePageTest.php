@@ -87,12 +87,12 @@ class HomePageTest extends TestCase
         $resume = $this->createOwnersResume();
         ResumeEntry::factory()->recycle($resume)->create([
             'organization' => 'Acme',
-            'end_date' => null,
+            'end_year' => null,
             'in_progress' => true,
         ]);
         ResumeEntry::factory()->recycle($resume)->education()->create([
             'organization' => 'University of Ljubljana',
-            'end_date' => null,
+            'end_year' => null,
             'in_progress' => true,
             'order' => 0,
         ]);
@@ -106,7 +106,7 @@ class HomePageTest extends TestCase
     {
         $resume = $this->createOwnersResume();
         ResumeEntry::factory()->recycle($resume)->education()->create([
-            'end_date' => null,
+            'end_year' => null,
             'in_progress' => true,
         ]);
 
@@ -150,5 +150,22 @@ class HomePageTest extends TestCase
         $owner = User::factory()->create(['email' => self::ADMIN_EMAIL]);
 
         return Resume::factory()->published()->for($owner)->create();
+    }
+
+    public function test_it_shows_the_month_only_for_dates_that_have_one(): void
+    {
+        $resume = $this->createOwnersResume();
+        ResumeEntry::factory()->recycle($resume)->create([
+            'start_year' => 2015,
+            'start_month' => null,
+            'end_year' => 2018,
+            'end_month' => 3,
+            'in_progress' => false,
+        ]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('<time datetime="2015">2015</time>', escape: false)
+            ->assertSee('<time datetime="2018-03">03/2018</time>', escape: false);
     }
 }
