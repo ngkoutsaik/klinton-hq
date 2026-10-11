@@ -49,4 +49,14 @@ class ResumeEntryTest extends TestCase
 
         $this->assertSame(ResumeEntryType::WORK, $entry->fresh()->type);
     }
+
+    public function test_saving_an_ongoing_entry_clears_its_end_date(): void
+    {
+        $entry = ResumeEntry::factory()->create(['in_progress' => false, 'end_year' => 2020, 'end_month' => 5]);
+
+        $entry->update(['in_progress' => true]);
+
+        $this->assertNull($entry->fresh()->end_year);
+        $this->assertNull($entry->fresh()->end_month);
+    }
 }
