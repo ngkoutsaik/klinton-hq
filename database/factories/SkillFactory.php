@@ -18,7 +18,7 @@ class SkillFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name(),
+            'name' => $this->faker->unique()->words(2, true),
         ];
     }
 }
