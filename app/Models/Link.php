@@ -18,6 +18,7 @@ class Link extends Model
         'icon',
         'open_in_new_tab',
         'resume_id',
+        'order',
     ];
 
     protected $casts = [
