@@ -42,6 +42,7 @@ class ResumeEntry extends Model
 
     protected static function booted(): void
     {
+        // The form disables the end fields for ongoing entries, and Filament doesn't save disabled fields
         static::saving(function (ResumeEntry $entry) {
             if ($entry->in_progress) {
                 $entry->end_year = null;
