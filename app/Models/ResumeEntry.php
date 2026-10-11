@@ -39,4 +39,14 @@ class ResumeEntry extends Model
     protected $attributes = [
         'in_progress' => false,
     ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (ResumeEntry $entry) {
+            if ($entry->in_progress) {
+                $entry->end_year = null;
+                $entry->end_month = null;
+            }
+        });
+    }
 }
