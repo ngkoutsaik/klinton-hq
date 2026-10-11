@@ -21,12 +21,12 @@
                     @endif
                 </div>
                 <p class="entry-dates">
-                    <time datetime="{{ $entry->start_date->format('Y-m') }}">{{ $entry->start_date->format('m/Y') }}</time>
+                    <x-year-month :year="$entry->start_year" :month="$entry->start_month"/>
                     –
-                    @if($entry->in_progress || ! $entry->end_date)
+                    @if($entry->in_progress || ! $entry->end_year)
                         Present
                     @else
-                        <time datetime="{{ $entry->end_date->format('Y-m') }}">{{ $entry->end_date->format('m/Y') }}</time>
+                        <x-year-month :year="$entry->end_year" :month="$entry->end_month"/>
                     @endif
                 </p>
             </header>

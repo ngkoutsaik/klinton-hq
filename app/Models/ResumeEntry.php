@@ -17,8 +17,10 @@ class ResumeEntry extends Model
         'organization',
         'location',
         'description',
-        'start_date',
-        'end_date',
+        'start_year',
+        'start_month',
+        'end_year',
+        'end_month',
         'in_progress',
         'resume_id',
         'order',
@@ -26,8 +28,10 @@ class ResumeEntry extends Model
     ];
 
     protected $casts = [
-        'start_date' => 'datetime',
-        'end_date' => 'datetime',
+        'start_year' => 'integer',
+        'start_month' => 'integer',
+        'end_year' => 'integer',
+        'end_month' => 'integer',
         'in_progress' => 'boolean',
         'type' => ResumeEntryType::class,
     ];

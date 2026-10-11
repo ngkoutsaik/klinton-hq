@@ -13,7 +13,7 @@
     $description = Str::limit(Str::squish(html_entity_decode($introText, ENT_QUOTES)), 155)
         ?: "Resume of {$fullName}, {$jobTitle}.";
     $canonicalUrl = url('/');
-    $currentExperience = $workExperiences->first(fn ($experience) => $experience->in_progress || ! $experience->end_date);
+    $currentExperience = $workExperiences->first(fn ($experience) => $experience->in_progress || ! $experience->end_year);
     $personSchema = array_filter([
         '@context' => 'https://schema.org',
         '@type' => 'Person',

@@ -87,12 +87,12 @@ class HomePageTest extends TestCase
         $resume = $this->createOwnersResume();
         ResumeEntry::factory()->recycle($resume)->create([
             'organization' => 'Acme',
-            'end_date' => null,
+            'end_year' => null,
             'in_progress' => true,
         ]);
         ResumeEntry::factory()->recycle($resume)->education()->create([
             'organization' => 'University of Ljubljana',
-            'end_date' => null,
+            'end_year' => null,
             'in_progress' => true,
             'order' => 0,
         ]);
@@ -106,7 +106,7 @@ class HomePageTest extends TestCase
     {
         $resume = $this->createOwnersResume();
         ResumeEntry::factory()->recycle($resume)->education()->create([
-            'end_date' => null,
+            'end_year' => null,
             'in_progress' => true,
         ]);
 
