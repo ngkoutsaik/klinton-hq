@@ -2,14 +2,14 @@
     <h2 class="section-title">{{$title}}</h2>
 
     @foreach($entries as $entry)
-        <article class="experience">
-            <header class="experience-header">
+        <article class="entry">
+            <header class="entry-header">
                 <div>
-                    <h3 class="experience-role">
+                    <h3 class="entry-role">
                         {{ $entry->organization }} – {{ $entry->title }}
                     </h3>
                     @if($entry->location)
-                        <span class="experience-location">
+                        <span class="entry-location">
                                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -20,7 +20,7 @@
                                 </span>
                     @endif
                 </div>
-                <p class="experience-dates">
+                <p class="entry-dates">
                     <time datetime="{{ $entry->start_date->format('Y-m') }}">{{ $entry->start_date->format('m/Y') }}</time>
                     –
                     @if($entry->in_progress || ! $entry->end_date)
