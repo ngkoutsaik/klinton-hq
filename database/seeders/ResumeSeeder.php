@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\LinkIcon;
+use App\Enums\SkillType;
 use App\Models\Resume;
 use App\Models\Skill;
 use App\Models\User;
@@ -99,11 +100,35 @@ class ResumeSeeder extends Seeder
             ['title' => 'Languages', 'value' => 'Greek, English', 'is_active' => false, 'order' => 2],
         ]);
 
+        $skills = $this->getSkills();
+
         $skillIds = array_map(
-            fn (string $name): int => Skill::firstOrCreate(['name' => $name])->id,
-            ['PHP', 'Laravel', 'Drupal', 'MySQL', 'Docker', 'Vue.js', 'GitLab CI', 'PHPUnit'],
+            fn (string $name, SkillType $type): int => Skill::firstOrCreate(['name' => $name], ['type' => $type])->id,
+            array_keys($skills),
+            $skills,
         );
 
-        $resume->skills()->attach($skillIds, ['is_active' => true]);
+        foreach ($skillIds as $order => $skillId) {
+            $resume->skills()->attach($skillId, ['is_active' => true, 'order' => $order]);
+        }
+    }
+
+    /**
+     * @return array<string, SkillType>
+     */
+    protected function getSkills(): array
+    {
+        return [
+            'PHP' => SkillType::LANGUAGE_FRAMEWORK,
+            'Laravel' => SkillType::LANGUAGE_FRAMEWORK,
+            'Drupal' => SkillType::LANGUAGE_FRAMEWORK,
+            'Vue.js' => SkillType::LANGUAGE_FRAMEWORK,
+            'MySQL' => SkillType::TOOL,
+            'Docker' => SkillType::TOOL,
+            'GitLab CI' => SkillType::TOOL,
+            'PHPUnit' => SkillType::TOOL,
+            'Greek' => SkillType::SPOKEN_LANGUAGE,
+            'English' => SkillType::SPOKEN_LANGUAGE,
+        ];
     }
 }
