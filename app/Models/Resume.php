@@ -44,7 +44,7 @@ class Resume extends Model
     {
         return $this->belongsToMany(Skill::class, 'resume_skills')
             ->using(ResumeSkill::class)
-            ->withPivot('is_active')
+            ->withPivot('is_active', 'order')
             ->withTimestamps();
     }
 
