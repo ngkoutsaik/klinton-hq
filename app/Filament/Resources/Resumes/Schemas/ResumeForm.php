@@ -75,6 +75,7 @@ class ResumeForm
                     ->preload()
                     ->required()
                     ->distinct()
+                    ->live()
                     ->createOptionForm(self::getSkillSchema())
                     ->editOptionForm(self::getSkillSchema()),
                 TextEntry::make('type')
