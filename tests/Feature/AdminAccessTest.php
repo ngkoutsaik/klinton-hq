@@ -12,8 +12,22 @@ class AdminAccessTest extends TestCase
 
     public function test_an_admin_can_access_the_panel(): void
     {
+        $this->actingAs(User::factory()->admin()->withAppAuthentication()->create())
+            ->get('/admin')
+            ->assertOk();
+    }
+
+    public function test_an_admin_without_an_authenticator_app_must_set_one_up(): void
+    {
         $this->actingAs(User::factory()->admin()->create())
             ->get('/admin')
+            ->assertRedirect('/admin/multi-factor-authentication/set-up');
+    }
+
+    public function test_an_admin_can_open_their_profile(): void
+    {
+        $this->actingAs(User::factory()->admin()->withAppAuthentication()->create())
+            ->get('/admin/profile')
             ->assertOk();
     }
 
@@ -58,5 +72,19 @@ class AdminAccessTest extends TestCase
 
         $this->assertSame(1, User::count());
         $this->assertTrue(User::firstOrFail()->is_admin);
+    }
+
+    public function test_the_command_resets_an_admins_authenticator_app(): void
+    {
+        $user = User::factory()->admin()->withAppAuthentication()->create();
+
+        $this->artisan('app:reset-admin-mfa', ['email' => $user->email])->assertSuccessful();
+
+        $this->assertNull($user->refresh()->app_authentication_secret);
+    }
+
+    public function test_the_reset_command_fails_for_an_unknown_email(): void
+    {
+        $this->artisan('app:reset-admin-mfa', ['email' => 'nobody@example.com'])->assertFailed();
     }
 }
