@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\SkillType;
 use App\Models\Skill;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,6 +20,7 @@ class SkillFactory extends Factory
     {
         return [
             'name' => $this->faker->unique()->words(2, true),
+            'type' => $this->faker->randomElement(SkillType::cases()),
         ];
     }
 }

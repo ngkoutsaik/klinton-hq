@@ -5,7 +5,8 @@
     $links = $resume->links?->sortBy('order');
     $workExperiences = $resume->workExperiences?->sortBy('order');
     $education = $resume->education?->sortBy('order');
-    $skills = $resume->skills->filter(fn ($skill) => $skill->pivot->is_active);
+    $skills = $resume->activeSkills;
+    $skillsByType = $skills->groupBy(fn ($skill) => $skill->type->value);
 
     $jobTitle = 'Senior Software Engineer';
     $pageTitle = "{$fullName} – {$jobTitle}";
@@ -123,15 +124,8 @@
     @if($education->isNotEmpty())
         <x-resume-entries title="Education" :entries="$education"></x-resume-entries>
     @endif
-    @if($skills->isNotEmpty())
-        <section class="resume-section">
-            <h2 class="section-title">Technical Skills</h2>
-            <ul class="skill-list">
-                @foreach($skills as $skill)
-                    <li>{{ $skill->name }}</li>
-                @endforeach
-            </ul>
-        </section>
+    @if($skillsByType->isNotEmpty())
+        <x-resume-skills :skills-by-type="$skillsByType"></x-resume-skills>
     @endif
 </main>
 </body>

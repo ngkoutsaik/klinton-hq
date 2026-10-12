@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Enums\SkillType;
 use App\Models\Resume;
 use App\Models\ResumeEntry;
+use App\Models\Skill;
 use App\Models\User;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -69,6 +71,27 @@ class HomePageTest extends TestCase
         ResumeEntry::factory()->recycle($resume)->create();
 
         $this->get('/')->assertOk()->assertDontSee('>Education</h2>', escape: false);
+    }
+
+    public function test_it_groups_active_skills_by_type_in_their_own_sections(): void
+    {
+        $resume = $this->createOwnersResume();
+        $resume->skills()->attach(Skill::factory()->create(['name' => 'Greek', 'type' => SkillType::SPOKEN_LANGUAGE]), ['order' => 0]);
+        $resume->skills()->attach(Skill::factory()->create(['name' => 'Laravel', 'type' => SkillType::LANGUAGE_FRAMEWORK]), ['order' => 2]);
+        $resume->skills()->attach(Skill::factory()->create(['name' => 'PHP', 'type' => SkillType::LANGUAGE_FRAMEWORK]), ['order' => 1]);
+        $resume->skills()->attach(Skill::factory()->create(['name' => 'Cobol', 'type' => SkillType::LANGUAGE_FRAMEWORK]), ['is_active' => false]);
+
+        $this->get('/')->assertOk()
+            ->assertSeeTextInOrder(['Skills', 'Languages & Frameworks', 'PHP', 'Laravel', 'Spoken Languages', 'Greek'])
+            ->assertDontSeeText('Cobol');
+    }
+
+    public function test_it_hides_a_skill_section_when_it_has_no_active_skills(): void
+    {
+        $resume = $this->createOwnersResume();
+        $resume->skills()->attach(Skill::factory()->create(['type' => SkillType::LANGUAGE_FRAMEWORK]));
+
+        $this->get('/')->assertOk()->assertDontSeeText('Spoken Languages');
     }
 
     public function test_it_shows_an_education_entry_without_a_description(): void

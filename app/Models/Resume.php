@@ -11,6 +11,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @SuppressWarnings("PHPMD.TooManyPublicMethods")
+ */
 class Resume extends Model
 {
     /** @use HasFactory<ResumeFactory> */
@@ -44,8 +47,16 @@ class Resume extends Model
     {
         return $this->belongsToMany(Skill::class, 'resume_skills')
             ->using(ResumeSkill::class)
-            ->withPivot('is_active')
+            ->withPivot('is_active', 'order')
             ->withTimestamps();
+    }
+
+    /**
+     * @return BelongsToMany<Skill, $this, ResumeSkill>
+     */
+    public function activeSkills(): BelongsToMany
+    {
+        return $this->skills()->wherePivot('is_active', true)->orderByPivot('order');
     }
 
     /**

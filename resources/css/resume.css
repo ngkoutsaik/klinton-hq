@@ -263,6 +263,24 @@ a:hover {
 
 /* Skills */
 
+.skill-group {
+    display: grid;
+    grid-template-columns: 11rem 1fr;
+    gap: 0.375rem 1rem;
+    align-items: baseline;
+}
+
+.skill-group + .skill-group {
+    margin-top: 0.75rem;
+}
+
+.skill-group-title {
+    margin: 0;
+    color: var(--resume-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
 .skill-list {
     display: flex;
     flex-wrap: wrap;
@@ -314,6 +332,10 @@ a:hover {
 
     .entry-location {
         margin-left: 0.5rem;
+    }
+
+    .skill-group {
+        grid-template-columns: 1fr;
     }
 }
 
@@ -370,6 +392,14 @@ a:hover {
     .rich-text ul,
     .rich-text ol {
         margin-bottom: 0.25rem;
+    }
+
+    .skill-group {
+        break-inside: avoid;
+    }
+
+    .skill-group + .skill-group {
+        margin-top: 0.375rem;
     }
 
     .skill-list {
