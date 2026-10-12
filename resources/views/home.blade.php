@@ -5,7 +5,7 @@
     $links = $resume->links?->sortBy('order');
     $workExperiences = $resume->workExperiences?->sortBy('order');
     $education = $resume->education?->sortBy('order');
-    $skills = $resume->skills->sortBy('pivot.order')->filter(fn ($skill) => $skill->pivot->is_active);
+    $skills = $resume->activeSkills;
     $skillsByType = $skills->groupBy(fn ($skill) => $skill->type->value);
 
     $jobTitle = 'Senior Software Engineer';

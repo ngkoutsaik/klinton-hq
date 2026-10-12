@@ -27,7 +27,7 @@ class HomeController extends Controller
         $resume = Resume::publishedFor($this->adminEmail)->with(
             'user',
             'activeExtraInfo',
-            'skills',
+            'activeSkills',
             'links',
             'workExperiences',
             'education'
@@ -49,7 +49,7 @@ class HomeController extends Controller
         $resume = Resume::publishedFor($this->adminEmail)->with(
             'user',
             'activeExtraInfo',
-            'skills',
+            'activeSkills',
             'links',
             'workExperiences',
             'education'
