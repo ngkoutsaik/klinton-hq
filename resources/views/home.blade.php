@@ -44,7 +44,11 @@
         <meta property="profile:first_name" content="{{ $user->first_name }}">
         <meta property="profile:last_name" content="{{ $user->last_name }}">
     @endif
-    <meta name="twitter:card" content="summary">
+    <meta property="og:image" content="{{ URL::asset('social-preview.png') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ $pageTitle }}">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $pageTitle }}">
     <meta name="twitter:description" content="{{ $description }}">
 

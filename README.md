@@ -193,8 +193,8 @@ docker exec -it klinton-hq php artisan app:create-admin
 
 - [x] Resume page with PDF download
 - [x] Open Graph tags and structured data
-- [ ] Social preview image (`og:image`)
-- [ ] Education and certifications
+- [x] Social preview image (`og:image`)
+- [x] Education ~~and certifications~~
 - [ ] Contact form with spam protection
 - [ ] Private links to tailored resumes
 - [ ] Invoicing: clients, invoices, PDF, email sending
