@@ -56,6 +56,7 @@ version, and visitors can download it as a PDF. Invoicing is planned next.
 | Admin panel setup            | `app/Providers/Filament/AdminPanelProvider.php`         |
 | Data model                   | `app/Models/`, `database/migrations/`                   |
 | Create-admin command         | `app/Console/Commands/CreateAdmin.php`                  |
+| Rules for AI agents          | `.ai/guidelines/project.md`                             |
 
 ## Getting started
 
@@ -150,6 +151,12 @@ only the staged files with Pint, PHPMD and PHPStan, and blocks leftover debug ca
 
 GitHub Actions runs on every push and pull request to `main`: GrumPHP on the whole project, the tests on
 MySQL 8.4 (after the front-end build), `composer audit` and `npm audit`, and a build of the production Docker image.
+
+## AI tooling
+
+The repo is set up for AI coding agents, mainly [Claude Code](https://code.claude.com): Laravel Boost, project rules,
+skills, and a hook and sandbox that keep agents from deleting files or writing outside the project. None of it is
+needed to run the app. See [docs/ai-tooling.md](docs/ai-tooling.md).
 
 ## Deployment
 
