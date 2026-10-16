@@ -1,7 +1,7 @@
 FROM serversideup/php:8.3-fpm-nginx AS base
 
 USER root
-RUN install-php-extensions intl
+RUN install-php-extensions intl excimer
 USER www-data
 
 FROM base AS vendor
