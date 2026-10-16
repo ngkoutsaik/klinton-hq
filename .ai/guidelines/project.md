@@ -42,3 +42,4 @@ Older code still uses helpers. Don't convert it as part of unrelated work.
 
 - A branch contains only changes for its purpose. Unrelated fixes go on their own branch, unless the change can't work without them.
 - No AI attribution in commits or PRs: no `Co-Authored-By` trailers, no "Generated with" lines.
+- Keep a branch small and reviewable: land the smallest coherent, shippable slice. Split a large feature into sequential branches (e.g. model + migration, then UI, then async/jobs) rather than one big drop.
