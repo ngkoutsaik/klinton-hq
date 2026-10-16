@@ -29,3 +29,9 @@ storage/phpstan
 /public/css/filament/
 /public/fonts/filament/
 /public/js/filament/
+/.claude/settings.local.json
+/.claude/skills/filament-development
+/.claude/skills/infer-conventions
+/.claude/skills/laravel-best-practices
+/.claude/skills/tailwindcss-development
+/.claude/skills/testing-best-practices
