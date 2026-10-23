@@ -153,6 +153,13 @@ a:hover {
     color: var(--resume-accent);
 }
 
+.header-actions {
+    display: flex;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
 .download-button {
     display: inline-flex;
     flex-shrink: 0;
