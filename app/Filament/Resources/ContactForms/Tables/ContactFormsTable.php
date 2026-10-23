@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ContactForms\Tables;
 
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -30,6 +31,9 @@ class ContactFormsTable
             ->defaultSort('created_at', 'desc')
             ->recordActions([
                 ViewAction::make(),
+            ])
+            ->toolbarActions([
+                DeleteBulkAction::make(),
             ]);
     }
 }

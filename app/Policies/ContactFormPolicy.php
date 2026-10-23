@@ -44,7 +44,15 @@ class ContactFormPolicy
      */
     public function delete(User $user, ContactForm $contactForm): bool
     {
-        return false;
+        return true;
+    }
+
+    /**
+     * Determine whether the user can delete any models.
+     */
+    public function deleteAny(User $user): bool
+    {
+        return true;
     }
 
     /**

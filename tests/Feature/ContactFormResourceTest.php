@@ -6,6 +6,8 @@ use App\Filament\Resources\ContactForms\ContactFormResource;
 use App\Filament\Resources\ContactForms\Pages\ListContactForms;
 use App\Models\ContactForm;
 use App\Models\User;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -37,6 +39,20 @@ class ContactFormResourceTest extends TestCase
         $this->get(ContactFormResource::getUrl('view', ['record' => $contactForm]))
             ->assertOk()
             ->assertSeeText('I would like to talk.');
+    }
+
+    public function test_an_admin_can_delete_selected_contact_forms(): void
+    {
+        $selected = ContactForm::factory()->create();
+        $unselected = ContactForm::factory()->create();
+
+        Livewire::test(ListContactForms::class)
+            ->selectTableRecords([$selected])
+            ->callAction(TestAction::make(DeleteBulkAction::class)->table()->bulk())
+            ->assertNotified();
+
+        $this->assertModelMissing($selected);
+        $this->assertModelExists($unselected);
     }
 
     public function test_contact_forms_cannot_be_edited(): void
