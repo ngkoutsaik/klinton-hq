@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ContactFormController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SeoController;
 use App\Http\Middleware\NoIndex;
@@ -12,3 +13,5 @@ Route::get('/robots.txt', [SeoController::class, 'robots']);
 
 Route::get('/download', [HomeController::class, 'download'])->name('resume.download')
     ->middleware(['throttle:20,1', NoIndex::class]);
+
+Route::post('/contact', [ContactFormController::class, 'store'])->name('contact.store');

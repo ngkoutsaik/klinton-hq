@@ -1,3 +1,4 @@
+@use('Illuminate\Support\Facades\Config')
 @php
     $user = $resume->user;
     $fullName = trim("{$user->first_name} {$user->last_name}") ?: $user->name;
@@ -7,6 +8,7 @@
     $education = $resume->education?->sortBy('order');
     $skills = $resume->activeSkills;
     $skillsByType = $skills->groupBy(fn ($skill) => $skill->type->value);
+    $showContactForm = Config::boolean('contact.enabled') && $isPdf !== true;
 
     $jobTitle = 'Senior Software Engineer';
     $pageTitle = "{$fullName} – {$jobTitle}";
@@ -61,58 +63,14 @@
 </head>
 <body>
 <main class="resume">
-    <header class="resume-header">
-        <div class="resume-identity">
-            <div class="resume-heading">
-                <h1 class="resume-name">{{ $fullName }}</h1>
-                @if($resume->looking_for_role)
-                    <span class="status-badge">
-                        <span class="status-dot" aria-hidden="true"></span>
-                        Open to work
-                    </span>
-                @endif
-            </div>
-
-            @if($extraInfos)
-                <p class="extra-info">{{ $extraInfos->pluck('value')->implode(' | ') }}</p>
-            @endif
-
-            @if($links->isNotEmpty())
-                <ul class="link-list">
-                    @foreach($links as $link)
-                        <li>
-                            <a href="{{ $link->url }}"
-                               @if($link->open_in_new_tab) target="_blank" rel="me noopener noreferrer"
-                               @else rel="me" @endif>
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15"
-                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                     stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-                                </svg>
-                                @if($isPdf===true)
-                                    {{  $link->url }}
-                                @else
-                                    {{ $link->title ?: $link->url }}
-                                @endif
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-        </div>
-
-        <a href="{{route('resume.download')}}" class="download-button">
-            <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7 10 12 15 17 10"/>
-                <line x1="12" x2="12" y1="15" y2="3"/>
-            </svg>
-            Download CV
-        </a>
-    </header>
+    <x-resume-header
+        :full-name="$fullName"
+        :looking-for-role="$resume->looking_for_role"
+        :extra-infos="$extraInfos"
+        :links="$links"
+        :is-pdf="$isPdf"
+        :show-contact-form="$showContactForm"
+    ></x-resume-header>
 
     @if($resume->intro)
         <section class="resume-section">
@@ -130,6 +88,10 @@
     @endif
     @if($skillsByType->isNotEmpty())
         <x-resume-skills :skills-by-type="$skillsByType"></x-resume-skills>
+    @endif
+
+    @if($showContactForm)
+        <x-contact-form></x-contact-form>
     @endif
 </main>
 </body>
