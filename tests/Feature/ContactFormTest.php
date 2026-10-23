@@ -37,6 +37,7 @@ class ContactFormTest extends TestCase
         $this->get('/')
             ->assertOk()
             ->assertSee('action="'.URL::route('contact.store').'"', escape: false)
+            ->assertSee('name="_token"', escape: false)
             ->assertSee('popovertarget="privacy-notice"', escape: false)
             ->assertSee('href="#contact"', escape: false);
     }

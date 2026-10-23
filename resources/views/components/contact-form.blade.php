@@ -9,6 +9,7 @@
     @endif
 
     <form method="post" action="{{ URL::route('contact.store') }}" class="contact-form">
+        @csrf
 
         <div class="contact-field">
             <label for="contact-email">Email</label>
