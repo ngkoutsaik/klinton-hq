@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\URL;
 
 class StoreContactFormRequest extends FormRequest
 {
@@ -39,5 +40,10 @@ class StoreContactFormRequest extends FormRequest
         return [
             'privacy_consent.accepted' => 'Please agree to the privacy notice.',
         ];
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return URL::to('/').'#contact';
     }
 }
