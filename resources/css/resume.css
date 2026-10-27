@@ -49,6 +49,13 @@ body {
     line-height: 1.5;
 }
 
+label:has(+ :required)::after,
+label:has(> :required)::after {
+    content: ' *';
+    color: red;
+}
+
+
 a {
     color: inherit;
     text-decoration: none;
