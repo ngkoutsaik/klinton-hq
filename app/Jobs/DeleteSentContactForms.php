@@ -15,7 +15,7 @@ class DeleteSentContactForms implements ShouldQueue
     {
         ContactForm::query()
             ->where('sent', true)
-            ->where('updated_at', '<=', Date::now()->subDays(6))
+            ->where('updated_at', '<=', Date::now()->subDays(7))
             ->delete();
     }
 }

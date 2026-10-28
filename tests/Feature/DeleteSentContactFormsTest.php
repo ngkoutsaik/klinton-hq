@@ -17,7 +17,7 @@ class DeleteSentContactFormsTest extends TestCase
         $this->travelTo('2026-10-16 12:00:00');
 
         $oldSent = ContactForm::factory()->sent()->create(['updated_at' => Date::now()->subDays(8)]);
-        $recentSent = ContactForm::factory()->sent()->create(['updated_at' => Date::now()->subDays(5)]);
+        $recentSent = ContactForm::factory()->sent()->create(['updated_at' => Date::now()->subDays(6)]);
         $oldUnsent = ContactForm::factory()->create(['sent' => false, 'updated_at' => Date::now()->subDays(30)]);
 
         (new DeleteSentContactForms)->handle();
