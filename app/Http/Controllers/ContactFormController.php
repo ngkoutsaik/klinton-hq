@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreContactFormRequest;
+use App\Jobs\SendContactFormEmail;
 use App\Models\ContactForm;
 use Closure;
 use Illuminate\Http\RedirectResponse;
@@ -33,10 +34,12 @@ class ContactFormController extends Controller implements HasMiddleware
 
     public function store(StoreContactFormRequest $request): RedirectResponse
     {
-        ContactForm::create([
+        $contactForm = ContactForm::create([
             ...$request->safe()->only(['email', 'subject', 'message']),
             'send_copy' => $request->boolean('send_copy'),
         ]);
+
+        SendContactFormEmail::dispatch($contactForm->id);
 
         return Redirect::to(URL::to('/').'#contact')
             ->with('contact_status', self::SUCCESS_MESSAGE);

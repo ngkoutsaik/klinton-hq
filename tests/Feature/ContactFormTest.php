@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\SendContactFormEmail;
 use App\Models\ContactForm;
 use App\Models\Resume;
 use App\Models\User;
@@ -83,6 +84,22 @@ class ContactFormTest extends TestCase
             'send_copy' => true,
             'sent' => false,
         ]);
+    }
+
+    public function test_a_valid_submission_dispatches_the_send_job(): void
+    {
+        $this->post(URL::route('contact.store'), [
+            'email' => 'visitor@example.com',
+            'subject' => 'Hello',
+            'message' => 'I would like to talk.',
+            'privacy_consent' => '1',
+        ]);
+
+        $contactForm = ContactForm::sole();
+        Queue::assertPushed(
+            SendContactFormEmail::class,
+            fn (SendContactFormEmail $job): bool => $job->contactFormId === $contactForm->id,
+        );
     }
 
     public function test_it_does_not_send_a_copy_when_the_checkbox_is_unticked(): void
