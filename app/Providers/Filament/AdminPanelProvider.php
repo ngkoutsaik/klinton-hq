@@ -19,21 +19,25 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Config;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        if (Config::boolean('admin.mfa_enabled')) {
+            $panel->multiFactorAuthentication([
+                AppAuthentication::make(),
+            ], isRequired: true);
+        }
+
         return $panel
             ->default()
             ->id('admin')
             ->path('admin')
             ->login()
             ->profile()
-            ->multiFactorAuthentication([
-                AppAuthentication::make(),
-            ], isRequired: true)
             ->colors([
                 'primary' => Color::Amber,
             ])
