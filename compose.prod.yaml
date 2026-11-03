@@ -51,7 +51,9 @@ services:
 
     # Same image as app; AUTORUN is off so only app runs migrations and caches on boot.
     worker:
-        build: *laravel-build
+        build:
+          context: .
+          dockerfile: Dockerfile
         command: ["php", "/var/www/html/artisan", "queue:work", "--tries=3", "--max-time=3600"]
         stop_signal: SIGTERM
         stop_grace_period: 60s
@@ -67,7 +69,9 @@ services:
                 condition: service_healthy
 
     scheduler:
-        build: *laravel-build
+        build:
+          context: .
+          dockerfile: Dockerfile
         command: ["php", "/var/www/html/artisan", "schedule:work"]
         stop_signal: SIGTERM
         environment:
