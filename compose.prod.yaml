@@ -1,5 +1,5 @@
-# Production stack for Coolify (Docker Compose build pack). MySQL stays a separate Coolify resource,
-# so enable "Connect to predefined network" and point DB_HOST at its container name.
+# Production stack for Coolify (Docker Compose build pack). MySQL and Gotenberg stay separate Coolify resources;
+# the Laravel services join the external `coolify` network to reach them, so point DB_HOST and GOTENBERG_URL at their container names.
 
 x-laravel-env: &laravel-env
     APP_NAME: ${APP_NAME:-Klinton HQ}
@@ -28,13 +28,17 @@ x-laravel-env: &laravel-env
     MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS}
     MAIL_FROM_NAME: ${MAIL_FROM_NAME:-Klinton HQ}
     LARAVEL_PDF_DRIVER: gotenberg
-    GOTENBERG_URL: http://gotenberg:3000
+    GOTENBERG_URL: ${GOTENBERG_URL}
     DEFAULT_ADMIN_EMAIL: ${DEFAULT_ADMIN_EMAIL:-}
     CONTACT_FORM_ENABLED: ${CONTACT_FORM_ENABLED:-false}
     CONTACT_RECIPIENT: ${CONTACT_RECIPIENT:-}
     SENTRY_LARAVEL_DSN: ${SENTRY_LARAVEL_DSN:-}
     SENTRY_TRACES_SAMPLE_RATE: ${SENTRY_TRACES_SAMPLE_RATE:-1.0}
     SENTRY_PROFILES_SAMPLE_RATE: ${SENTRY_PROFILES_SAMPLE_RATE:-1.0}
+
+x-laravel-networks: &laravel-networks
+    - default
+    - coolify
 
 services:
     app:
@@ -43,8 +47,7 @@ services:
             dockerfile: Dockerfile
         environment:
             <<: *laravel-env
-        depends_on:
-            - gotenberg
+        networks: *laravel-networks
 
     # Same image as app; AUTORUN is off so only app runs migrations and caches on boot.
     worker:
@@ -57,6 +60,7 @@ services:
         environment:
             <<: *laravel-env
             AUTORUN_ENABLED: false
+        networks: *laravel-networks
         healthcheck:
             test: ["CMD", "healthcheck-queue"]
             start_period: 10s
@@ -72,11 +76,13 @@ services:
         environment:
             <<: *laravel-env
             AUTORUN_ENABLED: false
+        networks: *laravel-networks
         healthcheck:
             test: ["CMD", "healthcheck-schedule"]
             start_period: 10s
         depends_on:
             - app
 
-    gotenberg:
-        image: gotenberg/gotenberg:8
+networks:
+    coolify:
+        external: true
