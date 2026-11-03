@@ -65,7 +65,8 @@ services:
             test: ["CMD", "healthcheck-queue"]
             start_period: 10s
         depends_on:
-            - app
+            app:
+                condition: service_healthy
 
     scheduler:
         build:
@@ -81,7 +82,8 @@ services:
             test: ["CMD", "healthcheck-schedule"]
             start_period: 10s
         depends_on:
-            - app
+            app:
+                condition: service_healthy
 
 networks:
     coolify:
