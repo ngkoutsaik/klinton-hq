@@ -27,7 +27,6 @@ class StoreContactFormRequest extends FormRequest
             'email' => ['required', 'email', 'max:255'],
             'subject' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:5000'],
-            'send_copy' => ['boolean'],
             'privacy_consent' => ['accepted'],
         ];
     }
