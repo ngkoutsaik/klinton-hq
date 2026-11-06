@@ -15,16 +15,13 @@ class ContactForm extends Model
         'email',
         'subject',
         'message',
-        'send_copy',
     ];
 
     protected $attributes = [
-        'send_copy' => false,
         'sent' => false,
     ];
 
     protected $casts = [
-        'send_copy' => 'boolean',
         'sent' => 'boolean',
     ];
 }

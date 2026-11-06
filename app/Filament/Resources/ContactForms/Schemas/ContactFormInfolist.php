@@ -21,8 +21,6 @@ class ContactFormInfolist
                     ->columnSpanFull(),
                 TextEntry::make('message')
                     ->columnSpanFull(),
-                IconEntry::make('send_copy')
-                    ->boolean(),
                 IconEntry::make('sent')
                     ->boolean(),
             ]);
