@@ -21,7 +21,6 @@ class ContactFormFactory extends Factory
             'email' => $this->faker->safeEmail(),
             'subject' => $this->faker->sentence(),
             'message' => $this->faker->paragraph(),
-            'send_copy' => $this->faker->boolean(),
         ];
     }
 

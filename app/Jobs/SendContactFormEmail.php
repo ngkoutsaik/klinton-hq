@@ -23,13 +23,7 @@ class SendContactFormEmail implements ShouldQueue
             return;
         }
 
-        $mail = Mail::to(Config::string('contact.recipient'));
-
-        if ($contactForm->send_copy) {
-            $mail->bcc($contactForm->email);
-        }
-
-        $mail->send(new ContactFormMail($contactForm));
+        Mail::to(Config::string('contact.recipient'))->send(new ContactFormMail($contactForm));
 
         $contactForm->sent = true;
         $contactForm->save();

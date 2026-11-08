@@ -34,10 +34,7 @@ class ContactFormController extends Controller implements HasMiddleware
 
     public function store(StoreContactFormRequest $request): RedirectResponse
     {
-        $contactForm = ContactForm::create([
-            ...$request->safe()->only(['email', 'subject', 'message']),
-            'send_copy' => $request->boolean('send_copy'),
-        ]);
+        $contactForm = ContactForm::create($request->safe()->only(['email', 'subject', 'message']));
 
         SendContactFormEmail::dispatch($contactForm->id);
 
