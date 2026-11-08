@@ -70,7 +70,6 @@ class ContactFormTest extends TestCase
             'email' => 'visitor@example.com',
             'subject' => 'Hello',
             'message' => 'I would like to talk.',
-            'send_copy' => '1',
             'privacy_consent' => '1',
         ]);
 
@@ -81,7 +80,6 @@ class ContactFormTest extends TestCase
             'email' => 'visitor@example.com',
             'subject' => 'Hello',
             'message' => 'I would like to talk.',
-            'send_copy' => true,
             'sent' => false,
         ]);
     }
@@ -100,18 +98,6 @@ class ContactFormTest extends TestCase
             SendContactFormEmail::class,
             fn (SendContactFormEmail $job): bool => $job->contactFormId === $contactForm->id,
         );
-    }
-
-    public function test_it_does_not_send_a_copy_when_the_checkbox_is_unticked(): void
-    {
-        $this->post(URL::route('contact.store'), [
-            'email' => 'visitor@example.com',
-            'subject' => 'Hello',
-            'message' => 'I would like to talk.',
-            'privacy_consent' => '1',
-        ]);
-
-        $this->assertDatabaseHas(ContactForm::class, ['send_copy' => false]);
     }
 
     public function test_it_ignores_a_submitted_sent_flag(): void

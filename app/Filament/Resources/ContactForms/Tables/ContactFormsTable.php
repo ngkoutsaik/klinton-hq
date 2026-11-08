@@ -23,8 +23,6 @@ class ContactFormsTable
                     ->searchable(),
                 TextColumn::make('subject')
                     ->searchable(),
-                IconColumn::make('send_copy')
-                    ->boolean(),
                 IconColumn::make('sent')
                     ->boolean(),
             ])

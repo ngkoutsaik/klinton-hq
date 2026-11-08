@@ -38,12 +38,7 @@
             @enderror
         </div>
 
-        <label class="contact-checkbox">
-            <input type="checkbox" name="send_copy" value="1" @checked(Request::old('send_copy'))>
-            Send a copy to me
-        </label>
-
-        <div>
+         <div>
             <label class="contact-checkbox">
                 <input type="checkbox" name="privacy_consent" value="1" required @checked(Request::old('privacy_consent'))
                        @error('privacy_consent') aria-invalid="true" aria-describedby="contact-privacy-error" @enderror>
