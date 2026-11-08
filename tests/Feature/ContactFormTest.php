@@ -29,6 +29,7 @@ class ContactFormTest extends TestCase
         Queue::fake();
         Config::set('admin.email', self::ADMIN_EMAIL);
         Config::set('contact.enabled', true);
+        Config::set('honeypot.enabled', false);
     }
 
     public function test_it_shows_the_form_on_the_homepage_when_enabled(): void
