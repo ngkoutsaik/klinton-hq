@@ -29,6 +29,7 @@ class ContactFormTest extends TestCase
         Queue::fake();
         Config::set('admin.email', self::ADMIN_EMAIL);
         Config::set('contact.enabled', true);
+        Config::set('honeypot.enabled', false);
     }
 
     public function test_it_shows_the_form_on_the_homepage_when_enabled(): void
@@ -173,6 +174,8 @@ class ContactFormTest extends TestCase
     public function test_it_returns_404_and_stores_nothing_when_disabled(): void
     {
         Config::set('contact.enabled', false);
+        // Without honeypot fields this would be treated as spam, so it proves the 404 comes first.
+        Config::set('honeypot.enabled', true);
 
         $response = $this->post(URL::route('contact.store'), [
             'email' => 'visitor@example.com',

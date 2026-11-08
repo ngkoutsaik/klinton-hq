@@ -11,6 +11,8 @@
     <form method="post" action="{{ URL::route('contact.store') }}" class="contact-form">
         @csrf
 
+        <x-honeypot />
+
         <div class="contact-field">
             <label for="contact-email">Email</label>
             <input type="email" id="contact-email" name="email" value="{{ Request::old('email') }}" required maxlength="255"
